@@ -1,55 +1,86 @@
+/* Updated editor.component.scss */
 .editor-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.monaco-editor {
+  flex-grow: 1;
+  min-height: 0; /* Important for flexbox to work properly */
+  border: none;
+  overflow: hidden;
+}
+
+.error-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background-color: #ffebee;
+  border-top: 1px solid #ef9a9a;
+
+  .error-icon {
+    color: #d32f2f;
+    margin-top: 2px;
   }
-  
-  .editor-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    border-bottom: 1px solid #e0e0e0;
-    background-color: #f5f5f5;
-  }
-  
-  .monaco-editor {
+
+  .error-details {
     flex-grow: 1;
-    min-height: 0; /* Important for flexbox to work properly */
+
+    h4 {
+      margin: 0 0 4px 0;
+      color: #d32f2f;
+      font-weight: bold;
+    }
+
+    pre {
+      margin: 0;
+      padding: 8px;
+      background-color: rgba(0, 0, 0, 0.03);
+      border-radius: 4px;
+      overflow-x: auto;
+      max-height: 120px;
+      font-size: 14px;
+      color: #b71c1c;
+    }
   }
-  
+
+  button {
+    align-self: center;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+}
+
+:host-context(.dark-theme) {
   .error-container {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 16px;
-    background-color: #ffebee;
-    border-top: 1px solid #ef9a9a;
-    
+    background-color: rgba(244, 67, 54, 0.15);
+    border-color: rgba(244, 67, 54, 0.3);
+
     .error-details {
-      flex-grow: 1;
-      
       h4 {
-        margin: 0 0 4px 0;
-        color: #d32f2f;
-        font-weight: bold;
+        color: #ef5350;
       }
-      
+
       pre {
-        margin: 0;
-        padding: 8px;
-        background-color: rgba(0, 0, 0, 0.03);
-        border-radius: 4px;
-        overflow-x: auto;
-        max-height: 120px;
-        font-size: 14px;
-        color: #b71c1c;
+        background-color: rgba(255, 255, 255, 0.05);
+        color: #ef9a9a;
       }
-    }
-    
-    button {
-      align-self: center;
-      margin-left: auto;
     }
   }
+}
+
+/* Mobile responsive design */
+@media (max-width: 768px) {
+  .error-container {
+    flex-direction: column;
+
+    button {
+      align-self: flex-start;
+      margin-left: 0;
+      margin-top: 8px;
+    }
+  }
+}

@@ -1,30 +1,20 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { DiagramStateService } from '../../services/diagram-state.service';
 import { UtilsService } from '../../services/utils.service';
 
 @Component({
   selector: 'app-toolbar',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTooltipModule
-  ],
   templateUrl: './toolbar.component.html',
-  styleUrl: './toolbar.component.scss'
+  styleUrls: ['./toolbar.component.scss']
 })
 export class ToolbarComponent {
+  @Output() themeToggled = new EventEmitter<boolean>();
+
   private diagramState = inject(DiagramStateService);
   private utils = inject(UtilsService);
 
-  mermaidVersion = '11.6.0'; // This should be dynamic in the future
+  mermaidVersion = '11.6.0';
+  isDarkTheme = false;
 
   shareDiagram(): void {
     const state = this.diagramState.currentState;
@@ -52,10 +42,12 @@ export class ToolbarComponent {
   }
 
   toggleTheme(): void {
-    document.body.classList.toggle('dark-theme');
-    // Would also update Mermaid theme accordingly
+    this.isDarkTheme = !this.isDarkTheme;
+    this.themeToggled.emit(this.isDarkTheme);
+
+    // Update Mermaid theme
     const config = JSON.parse(this.diagramState.currentState.mermaid);
-    config.theme = document.body.classList.contains('dark-theme') ? 'dark' : 'default';
+    config.theme = this.isDarkTheme ? 'dark' : 'default';
     this.diagramState.updateConfig(JSON.stringify(config, null, 2));
   }
 

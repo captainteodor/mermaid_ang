@@ -1,27 +1,16 @@
+<!-- Updated editor.component.html -->
 <div class="editor-container">
-    <div class="editor-toolbar">
-      <mat-button-toggle-group [value]="editorMode" (change)="toggleEditorMode()">
-        <mat-button-toggle value="code">Code</mat-button-toggle>
-        <mat-button-toggle value="config">Config</mat-button-toggle>
-      </mat-button-toggle-group>
-      
-      <button mat-button color="primary" (click)="openDocumentation()">
-        <mat-icon>book</mat-icon>
-        Documentation
-      </button>
+  <div #editorContainer class="monaco-editor"></div>
+
+  <div *ngIf="error" class="error-container">
+    <mat-icon class="error-icon" color="warn">error_outline</mat-icon>
+    <div class="error-details">
+      <h4>Syntax Error</h4>
+      <pre>{{ error }}</pre>
     </div>
-    
-    <div #editorContainer class="monaco-editor"></div>
-    
-    <div *ngIf="error" class="error-container">
-      <mat-icon color="warn">error_outline</mat-icon>
-      <div class="error-details">
-        <h4>Syntax Error</h4>
-        <pre>{{ error }}</pre>
-      </div>
-      <button mat-raised-button color="accent" (click)="tryFixWithAI()">
-        <mat-icon>auto_fix_high</mat-icon>
-        AI Fix
-      </button>
-    </div>
+    <button mat-raised-button color="accent" (click)="tryFixWithAI()">
+      <mat-icon>auto_fix_high</mat-icon>
+      AI Fix
+    </button>
   </div>
+</div>

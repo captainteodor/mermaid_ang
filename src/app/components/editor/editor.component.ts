@@ -1,8 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, OnDestroy, inject, PLATFORM_ID, Inject } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatIconModule } from '@angular/material/icon';
+import { isPlatformBrowser } from '@angular/common';
 import { DiagramStateService, ValidatedState } from '../../services/diagram-state.service';
 import { UtilsService } from '../../services/utils.service';
 import { Subscription } from 'rxjs';
@@ -12,10 +9,8 @@ declare const monaco: any;
 
 @Component({
   selector: 'app-editor',
-  standalone: true,
-  imports: [CommonModule, MatButtonModule, MatButtonToggleModule, MatIconModule],
   templateUrl: './editor.component.html',
-  styleUrl: './editor.component.scss'
+  styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('editorContainer') editorContainer!: ElementRef;

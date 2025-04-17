@@ -1,28 +1,12 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, inject, HostListener, PLATFORM_ID, Inject } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
-import { EditorComponent } from '../editor/editor.component';
-import { DiagramComponent } from '../diagram/diagram.component';
+import { isPlatformBrowser } from '@angular/common';
 import { DiagramStateService } from '../../services/diagram-state.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-workspace',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatTabsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDividerModule,
-    EditorComponent,
-    DiagramComponent
-  ],
   templateUrl: './workspace.component.html',
-  styleUrl: './workspace.component.scss'
+  styleUrls: ['./workspace.component.scss']
 })
 export class WorkspaceComponent implements OnInit, OnDestroy {
   @ViewChild('workspaceContainer') workspaceContainer!: ElementRef;
@@ -34,7 +18,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   isMobile = false;
   splitRatio = 50; // Percentage for the editor width (remainder goes to diagram)
   isDragging = false;
-  selectedTab = 'code'; // 'code' or 'config'
+  selectedTab = 'code'; // 'code' or 'config' or 'diagram' for mobile
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -78,7 +62,9 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
 
   onTabChange(tab: string): void {
     this.selectedTab = tab;
-    this.diagramState.updateState({ editorMode: tab as 'code' | 'config' });
+    if (tab === 'code' || tab === 'config') {
+      this.diagramState.updateState({ editorMode: tab as 'code' | 'config' });
+    }
   }
 
   // Resizer functionality
