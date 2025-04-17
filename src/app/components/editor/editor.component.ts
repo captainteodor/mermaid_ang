@@ -96,7 +96,11 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private async initMonacoEditor(): Promise<void> {
     try {
+      // Load Monaco from CDN via the service
       const monaco = await this.monacoLoader.loadMonaco();
+
+      // Log success message
+      console.log('Monaco Editor loaded successfully from CDN');
 
       // Create editor with the loaded Monaco instance
       this.editor = monaco.editor.create(this.editorContainer.nativeElement, {

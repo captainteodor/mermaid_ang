@@ -1,5 +1,6 @@
 /* Global styles for consistency */
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import url('https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/editor/editor.main.css');
 
 /* Basic reset */
 *,

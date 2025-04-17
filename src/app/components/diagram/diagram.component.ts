@@ -49,6 +49,9 @@ export class DiagramComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Only initialize mermaid in browser environment
     if (this.isBrowser) {
+      // Move initialization from ngAfterViewInit to here where possible
+      this.showGrid = this.diagramState.currentState.grid || false;
+
       mermaid.initialize({
         startOnLoad: false,
         theme: 'default',
@@ -158,13 +161,14 @@ export class DiagramComponent implements OnInit, AfterViewInit, OnDestroy {
         // Remove the inline max-width style that's constraining the SVG
         svgElement.style.removeProperty('max-width');
 
-        // Set better dimensions
-        const containerWidth = this.diagramContainer.nativeElement.clientWidth;
-        const containerHeight = this.diagramContainer.nativeElement.clientHeight;
+        // Get container dimensions once
+        const containerWidth = this.diagramContainer.nativeElement.clientWidth || 300;
+        const containerHeight = this.diagramContainer.nativeElement.clientHeight || 200;
 
         // Set width and height to fill most of the container while maintaining aspect ratio
-        const svgWidth = parseInt(svgElement.getAttribute('width'));
-        const svgHeight = parseInt(svgElement.getAttribute('height'));
+        // Ensure valid values before setting
+        const svgWidth = parseInt(svgElement.getAttribute('width')) || 100;
+        const svgHeight = parseInt(svgElement.getAttribute('height')) || 100;
         const aspectRatio = svgWidth / svgHeight;
 
         // Calculate new dimensions that fill most of the container
@@ -179,9 +183,15 @@ export class DiagramComponent implements OnInit, AfterViewInit, OnDestroy {
           newHeight = newWidth / aspectRatio;
         }
 
-        // Apply new dimensions
-        svgElement.setAttribute('width', `${newWidth}px`);
-        svgElement.setAttribute('height', `${newHeight}px`);
+        // Check for NaN before setting attributes
+        if (!isNaN(newWidth) && !isNaN(newHeight)) {
+          svgElement.setAttribute('width', `${newWidth}px`);
+          svgElement.setAttribute('height', `${newHeight}px`);
+        } else {
+          // Fallback to reasonable defaults
+          svgElement.setAttribute('width', '100%');
+          svgElement.setAttribute('height', '100%');
+        }
 
         // Ensure viewBox is set correctly
         if (!svgElement.getAttribute('viewBox')) {
@@ -215,8 +225,9 @@ export class DiagramComponent implements OnInit, AfterViewInit, OnDestroy {
   private setupPanZoom(): void {
     if (!this.isBrowser) return;
 
-    import('svg-pan-zoom').then(svgPanZoom => {
-      // Use the module directly, not trying to access .default
+    import('svg-pan-zoom').then(module => {
+      // Extract the default export - this is the actual function
+      const svgPanZoom = module.default;
 
       this.ngZone.runOutsideAngular(() => {
         try {
@@ -229,13 +240,15 @@ export class DiagramComponent implements OnInit, AfterViewInit, OnDestroy {
           // Remove any max-width constraint
           svgElement.style.removeProperty('max-width');
 
-          // Ensure SVG has proper dimensions
-          const containerWidth = this.diagramContainer.nativeElement.clientWidth;
-          const containerHeight = this.diagramContainer.nativeElement.clientHeight;
+          // Using the container dimensions without redeclaration
+          const containerDimensions = {
+            width: this.diagramContainer.nativeElement.clientWidth,
+            height: this.diagramContainer.nativeElement.clientHeight
+          };
 
           // Set dimensions to fill most of the container
-          svgElement.setAttribute('width', `${containerWidth * 0.95}px`);
-          svgElement.setAttribute('height', `${containerHeight * 0.95}px`);
+          svgElement.setAttribute('width', `${containerDimensions.width * 0.95}px`);
+          svgElement.setAttribute('height', `${containerDimensions.height * 0.95}px`);
 
           // Ensure viewBox is set correctly
           const svgBBox = svgElement.getBBox();

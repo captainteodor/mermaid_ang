@@ -1,124 +1,98 @@
-// src/app/services/monaco-loader.service.ts
-import { Injectable, NgZone, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MonacoLoaderService {
-  private _monaco: any;
-  private _initialized = false;
+  private monacoPromise: Promise<any> | null = null;
+  private isBrowser: boolean;
 
-  constructor(
-    private ngZone: NgZone,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  // Monaco CDN URLs
+  private readonly MONACO_CDN = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min';
 
-  /**
-   * Load Monaco editor instance
-   */
-  public async loadMonaco(): Promise<any> {
-    if (!isPlatformBrowser(this.platformId)) {
-      // Return a mock monaco object when in SSR
-      return {
-        editor: {
-          create: () => {},
-          defineTheme: () => {},
-          setTheme: () => {},
-          setModelLanguage: () => {}
-        },
-        languages: {
-          register: () => {},
-          setMonarchTokensProvider: () => {},
-          registerCompletionItemProvider: () => {},
-          setLanguageConfiguration: () => {},
-          getLanguages: () => []
-        }
-      };
-    }
-
-    if (this._monaco) {
-      return this._monaco;
-    }
-
-    try {
-      // Load monaco editor outside Angular zone for better performance
-      return await this.ngZone.runOutsideAngular(async () => {
-        if (!this._initialized) {
-          // Configure monaco environment
-          this.configureMonacoEnvironment(); // Call it here
-
-          // Import Monaco editor dynamically
-          const monaco = await import('monaco-editor');
-          this._monaco = monaco;
-          this._initialized = true;
-
-          // Register mermaid language (simplified version)
-          this.registerMermaidLanguage(monaco);
-        }
-
-        return this._monaco;
-      });
-    } catch (error) {
-      console.error('Error loading Monaco Editor:', error);
-      throw error;
-    }
+  constructor(@Inject(PLATFORM_ID) platformId: Object) {
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   /**
-   * Register mermaid language for Monaco
+   * Loads the Monaco editor from CDN
+   * @returns A promise that resolves with the Monaco namespace
    */
+  loadMonaco(): Promise<any> {
+    if (!this.isBrowser) {
+      return Promise.reject('Cannot load Monaco in server environment');
+    }
+
+    if (!this.monacoPromise) {
+      this.monacoPromise = new Promise<any>((resolve, reject) => {
+        const script: HTMLScriptElement = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = `${this.MONACO_CDN}/vs/loader.js`;
+        script.onload = () => {
+          const require = (window as any).require;
+
+          require.config({
+            paths: {
+              vs: `${this.MONACO_CDN}/vs`
+            }
+          });
+
+          require(['vs/editor/editor.main'], () => {
+            resolve((window as any).monaco);
+          });
+        };
+        script.onerror = (err) => reject(err);
+        document.head.appendChild(script);
+      });
+    }
+
+    return this.monacoPromise;
+  }
+
   private registerMermaidLanguage(monaco: any): void {
-    if (!monaco.languages.getLanguages().some((lang: any) => lang.id === 'mermaid')) {
-      monaco.languages.register({ id: 'mermaid' });
+    monaco.languages.register({ id: 'mermaid' });
 
-      monaco.languages.setMonarchTokensProvider('mermaid', {
-        tokenizer: {
-          root: [
-            [/^\s*sequenceDiagram/, 'keyword'],
-            [/^\s*classDiagram/, 'keyword'],
-            [/^\s*classDiagram-v2/, 'keyword'],
-            [/^\s*flowchart/, 'keyword'],
-            [/^\s*graph/, 'keyword'],
-            [/^\s*stateDiagram/, 'keyword'],
-            [/^\s*stateDiagram-v2/, 'keyword'],
-            [/^\s*erDiagram/, 'keyword'],
-            [/^\s*gantt/, 'keyword'],
-            [/^\s*pie/, 'keyword'],
-            [/^\s*journey/, 'keyword'],
-            [/^\s*gitGraph/, 'keyword'],
-            [/-{2,}>/, 'string'],
-            [/==>/, 'string'],
-            [/[{}[\]()]/, 'delimiter.bracket'],
-            [/[A-Za-z][\w$]*/, 'identifier'],
-            [/".*?"/, 'string'],
-            [/%%.*$/, 'comment']
-          ]
-        }
-      });
+    monaco.languages.setMonarchTokensProvider('mermaid', {
+      defaultToken: '',
+      tokenPostfix: '.mmd',
 
-      monaco.editor.defineTheme('mermaid-dark', {
-        base: 'vs-dark',
-        inherit: true,
-        rules: [
-          { token: 'keyword', foreground: '569cd6', fontStyle: 'bold' },
-          { token: 'string', foreground: 'ce9178' },
-          { token: 'identifier', foreground: '9cdcfe' },
-          { token: 'comment', foreground: '6a9955' }
-        ],
-        colors: {}
-      });
+      keywords: [
+        'graph', 'flowchart', 'sequenceDiagram', 'classDiagram', 'stateDiagram',
+        'erDiagram', 'gantt', 'pie', 'journey', 'gitGraph', 'C4Context'
+      ],
 
-      monaco.editor.setTheme('mermaid-dark');
-    }
-  }
+      typeKeywords: [
+        'participant', 'actor', 'class', 'interface', 'state', 'note', 'title'
+      ],
 
-  private configureMonacoEnvironment() {
-    window.MonacoEnvironment = {
-      getWorkerUrl: function() {
-        return './assets/monaco-editor-worker-loader.js';
-      },
-      globalAPI: true
-    };
+      brackets: [
+        { open: '{', close: '}', token: 'delimiter.curly' },
+        { open: '[', close: ']', token: 'delimiter.square' },
+        { open: '(', close: ')', token: 'delimiter.parenthesis' }
+      ],
+
+      tokenizer: {
+        root: [
+          [/[a-zA-Z_]\w*/, {
+            cases: {
+              '@keywords': 'keyword',
+              '@typeKeywords': 'type',
+              '@default': 'identifier'
+            }
+          }],
+          [/".*?"/, 'string'],
+          [/'.*?'/, 'string'],
+          [/[{}()\[\]]/, '@brackets'],
+          [/[<>](?!@brackets)/, 'operator'],
+          [/[;,.]/, 'delimiter'],
+          [/^---$/, 'separator'],
+          [/[0-9]+/, 'number'],
+          [/%%.*$/, 'comment'],
+          [/\/\/.*$/, 'comment'],
+          [/\s+/, 'white']
+        ]
+      }
+    });
   }
 }

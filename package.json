@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "npx ng",
-    "start": "npx ng serve",
-    "prepare-monaco": "echo 'Preparing Monaco Editor assets'",
-    "build": "npx @angular/cli@18.2.18 build",
-    "postbuild": "node copy-monaco-workers.js",
+    "start": "npm run prepare-monaco && ng serve",
+    "prepare-monaco": "node copy-monaco-assets.js",
+    "build": "npm run prepare-monaco && ng build",
+    "postbuild": "node copy-monaco-fonts.js && node copy-monaco-css.js",
     "watch": "npx ng build --watch --configuration development",
     "test": "npx ng test",
-    "serve:ssr:mermaid-editor": "node dist/mermaid-editor/server/server.mjs"
+    "serve:ssr:mermaid-editor": "node dist/mermaid-editor/server/server.mjs",
+    "postinstall": "npx patch-package"
   },
   "private": true,
   "dependencies": {
@@ -39,6 +40,7 @@
     "zone.js": "^0.14.10"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^19.0.1",
     "@angular-devkit/architect": "0.1802.18",
     "@angular-devkit/build-angular": "^18.2.8",
     "@angular-devkit/core": "18.2.18",
@@ -47,6 +49,7 @@
     "@angular/compiler-cli": "^18.2.13",
     "@types/express": "^4.17.21",
     "@types/jasmine": "~5.1.0",
+    "@types/marked": "^4.0.8",
     "@types/node": "^20.17.30",
     "@types/pako": "^2.0.3",
     "@types/retry": "^0.12.5",
