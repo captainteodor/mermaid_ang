@@ -1,0 +1,55 @@
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .editor-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #f5f5f5;
+  }
+  
+  .monaco-editor {
+    flex-grow: 1;
+    min-height: 0; /* Important for flexbox to work properly */
+  }
+  
+  .error-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    background-color: #ffebee;
+    border-top: 1px solid #ef9a9a;
+    
+    .error-details {
+      flex-grow: 1;
+      
+      h4 {
+        margin: 0 0 4px 0;
+        color: #d32f2f;
+        font-weight: bold;
+      }
+      
+      pre {
+        margin: 0;
+        padding: 8px;
+        background-color: rgba(0, 0, 0, 0.03);
+        border-radius: 4px;
+        overflow-x: auto;
+        max-height: 120px;
+        font-size: 14px;
+        color: #b71c1c;
+      }
+    }
+    
+    button {
+      align-self: center;
+      margin-left: auto;
+    }
+  }

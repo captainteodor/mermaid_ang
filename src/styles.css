@@ -1,1 +1,180 @@
 /* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+/* Light theme (default) */
+:root {
+  --primary-color: #3f51b5;
+  --primary-light: #757de8;
+  --primary-dark: #002984;
+  --accent-color: #ff4081;
+  --text-on-primary: #ffffff;
+  --background-color: #f5f5f5;
+  --card-background: #ffffff;
+  --border-color: #e0e0e0;
+  --text-color: rgba(0, 0, 0, 0.87);
+  --text-color-secondary: rgba(0, 0, 0, 0.54);
+  --error-color: #f44336;
+  --warning-color: #ff9800;
+  --success-color: #4caf50;
+}
+
+/* Dark theme */
+.dark-theme {
+  --primary-color: #7986cb;
+  --primary-light: #aab6fe;
+  --primary-dark: #49599a;
+  --accent-color: #ff4081;
+  --text-on-primary: #ffffff;
+  --background-color: #303030;
+  --card-background: #424242;
+  --border-color: #494949;
+  --text-color: rgba(255, 255, 255, 0.87);
+  --text-color-secondary: rgba(255, 255, 255, 0.6);
+  --error-color: #ff5252;
+  --warning-color: #ffab40;
+  --success-color: #69f0ae;
+
+  background-color: var(--background-color);
+  color: var(--text-color);
+
+  /* Override Angular Material theme */
+  .mat-app-background {
+    background-color: var(--background-color);
+  }
+
+  .mat-card {
+    background-color: var(--card-background);
+    color: var(--text-color);
+  }
+
+  .mat-toolbar.mat-primary {
+    background-color: var(--primary-dark);
+    color: var(--text-on-primary);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme {
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Utility classes */
+.full-width {
+  width: 100%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-8 { margin-top: 2rem; }
+
+.mr-1 { margin-right: 0.25rem; }
+.mr-2 { margin-right: 0.5rem; }
+.mr-4 { margin-right: 1rem; }
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-8 { margin-bottom: 2rem; }
+
+.ml-1 { margin-left: 0.25rem; }
+.ml-2 { margin-left: 0.5rem; }
+.ml-4 { margin-left: 1rem; }
+
+
+/* Ensure Material buttons render correctly */
+.mat-mdc-icon-button {
+  --mdc-icon-button-state-layer-size: 40px !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+
+  /* Ensure ripple and other elements don't cause overlap */
+  .mat-mdc-button-persistent-ripple,
+  .mat-mdc-focus-indicator,
+  .mat-mdc-button-touch-target,
+  .mat-ripple {
+    position: absolute !important;
+  }
+}
+
+.mat-icon {
+  font-size: 24px !important;
+  width: 24px !important;
+  height: 24px !important;
+  overflow: visible !important;
+}
+
+/* Fix for raised buttons */
+.mat-mdc-raised-button {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  /* Ensure ripple and other elements don't cause overlap */
+  .mat-mdc-button-persistent-ripple,
+  .mat-mdc-focus-indicator,
+  .mat-mdc-button-touch-target,
+  .mat-ripple {
+    position: absolute !important;
+  }
+
+  /* Ensure label is visible */
+  .mdc-button__label {
+    display: inline-block !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+}

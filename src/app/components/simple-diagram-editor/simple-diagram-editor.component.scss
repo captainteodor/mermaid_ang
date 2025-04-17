@@ -1,0 +1,201 @@
+.simple-editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 64px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+
+  .editor-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: #3f51b5;
+    margin-right: 32px;
+  }
+
+  .editor-tabs {
+    display: flex;
+    height: 100%;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 100%;
+      padding: 0 16px;
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.7);
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.active {
+        color: #3f51b5;
+        border-bottom: 2px solid #3f51b5;
+      }
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+    }
+  }
+
+  .docs-link {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #3f51b5;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(63, 81, 181, 0.08);
+    }
+  }
+}
+
+.editor-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  height: calc(100% - 60px);
+
+  .editor-panel, .diagram-panel {
+    flex: 1;
+    overflow: hidden;
+    height: 100%;
+  }
+
+
+  .editor-panel {
+    border-right: 1px solid #e0e0e0;
+  }
+}
+
+/* Dark theme adjustments */
+:host-context(.dark-theme) {
+  .editor-header {
+    background-color: #303030;
+    border-color: #444;
+
+    .editor-title {
+      color: #7986cb;
+    }
+
+    .editor-tabs button {
+      color: rgba(255, 255, 255, 0.7);
+
+      &.active {
+        color: #7986cb;
+        border-color: #7986cb;
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.04);
+      }
+    }
+
+    .docs-link {
+      color: #7986cb;
+
+      &:hover {
+        background-color: rgba(121, 134, 203, 0.08);
+      }
+    }
+  }
+
+  .editor-content .editor-panel {
+    border-color: #444;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .editor-content {
+    flex-direction: column;
+
+    .editor-panel, .diagram-panel {
+      flex: none;
+      height: 50%;
+    }
+
+    .editor-panel {
+      border-right: none;
+      border-bottom: 1px solid #e0e0e0;
+    }
+  }
+
+  .editor-header {
+    .editor-title {
+      margin-right: 8px;
+    }
+
+    .editor-tabs button {
+      padding: 0 8px;
+    }
+
+    .docs-link {
+      padding: 8px;
+
+      span {
+        display: none;
+      }
+    }
+  }
+}
+
+/* Add responsive adjustments */
+@media (max-width: 768px) {
+  .toolbar-right {
+    gap: 4px; /* Reduce gap on smaller screens */
+
+    button[mat-icon-button] {
+      width: 36px !important;
+      height: 36px !important;
+    }
+
+    button[mat-raised-button] {
+      min-width: 36px !important;
+      padding: 0 8px !important;
+
+      /* Hide text on very small screens */
+      @media (max-width: 480px) {
+        .mdc-button__label {
+          display: none !important;
+        }
+      }
+    }
+  }
+}
+
+/* Temporary debugging styles - remove after fixing the issue */
+.toolbar-right {
+  border: 1px solid red;
+
+  button {
+    border: 1px solid blue;
+
+    mat-icon {
+      border: 1px solid green;
+    }
+
+    .mdc-button__label {
+      border: 1px solid purple;
+    }
+  }
+}

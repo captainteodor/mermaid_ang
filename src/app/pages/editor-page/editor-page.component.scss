@@ -1,0 +1,112 @@
+.editor-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.2rem;
+
+  img {
+    height: 32px;
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.mobile-toggle {
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+
+  mat-button-toggle-group {
+    width: 100%;
+
+    mat-button-toggle {
+      flex: 1;
+      text-align: center;
+    }
+  }
+}
+
+.content-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+
+  &.mobile {
+    flex-direction: column;
+
+    &.view-editor {
+      .editor-panel {
+        flex: 1;
+        display: block;
+      }
+
+      .diagram-panel {
+        display: none;
+      }
+    }
+
+    &.view-diagram {
+      .editor-panel {
+        display: none;
+      }
+
+      .diagram-panel {
+        flex: 1;
+        display: block;
+      }
+    }
+  }
+
+  &:not(.mobile) {
+    .editor-panel, .diagram-panel {
+      flex: 1;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+  }
+
+  &.with-history:not(.mobile) {
+    .editor-panel, .diagram-panel {
+      flex: 1;
+    }
+
+    .history-panel {
+      flex: 0 0 25%; // Fixed width
+      max-width: 350px;
+    }
+  }
+}
+
+.editor-panel, .diagram-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.history-panel {
+  border-left: 1px solid #e0e0e0;
+  overflow-y: auto;
+  background-color: #fafafa;
+}
+
+// Placeholder for history panel
+.placeholder-content {
+  padding: 16px;
+  color: #757575;
+  text-align: center;
+
+  h3 {
+    margin-top: 0;
+  }
+}

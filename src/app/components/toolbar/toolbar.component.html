@@ -1,0 +1,40 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <div class="toolbar-left">
+    <span class="logo">
+      <img src="assets/mermaid-logo.svg" alt="Mermaid Logo" height="32">
+      <span class="title">Mermaid Live Editor</span>
+    </span>
+    <span class="version">v{{mermaidVersion}}</span>
+  </div>
+
+  <div class="toolbar-center">
+    <!-- This section can be used for breadcrumbs or status indicators -->
+  </div>
+
+  <div class="toolbar-right">
+    <button mat-icon-button matTooltip="Sample Diagrams" (click)="openSampleDiagrams()">
+      <mat-icon>category</mat-icon>
+    </button>
+
+    <button mat-icon-button matTooltip="Share Diagram" (click)="shareDiagram()">
+      <mat-icon>share</mat-icon>
+    </button>
+
+    <button mat-icon-button matTooltip="Export as SVG" (click)="exportDiagram('svg')">
+      <mat-icon>code</mat-icon>
+    </button>
+
+    <button mat-icon-button matTooltip="Export as PNG" (click)="exportDiagram('png')">
+      <mat-icon>image</mat-icon>
+    </button>
+
+    <button mat-icon-button matTooltip="Toggle Theme" (click)="toggleTheme()">
+      <mat-icon>dark_mode</mat-icon>
+    </button>
+
+    <button mat-raised-button color="accent" (click)="saveToAccount()">
+      <mat-icon>save</mat-icon>
+      Save
+    </button>
+  </div>
+</mat-toolbar>
