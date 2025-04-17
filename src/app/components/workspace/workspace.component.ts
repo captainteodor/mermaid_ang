@@ -1,12 +1,22 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild, inject, HostListener, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { DiagramStateService } from '../../services/diagram-state.service';
+import { Component, ElementRef, ViewChild, OnInit, OnDestroy, inject, PLATFORM_ID, Inject, HostListener } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { DiagramStateService } from '../../services/diagram-state.service';
+import { DiagramComponent } from '../diagram/diagram.component';
+import { MatIconModule } from '@angular/material/icon';
+import { EditorComponent } from '../editor/editor.component';
 
 @Component({
   selector: 'app-workspace',
   templateUrl: './workspace.component.html',
-  styleUrls: ['./workspace.component.scss']
+  styleUrls: ['./workspace.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+    EditorComponent,
+    DiagramComponent  // Import the DiagramComponent
+  ]
 })
 export class WorkspaceComponent implements OnInit, OnDestroy {
   @ViewChild('workspaceContainer') workspaceContainer!: ElementRef;
@@ -15,8 +25,9 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
   private isBrowser: boolean;
 
+  // Add these properties that are used in the template
   isMobile = false;
-  splitRatio = 50; // Percentage for the editor width (remainder goes to diagram)
+  splitRatio = 50; // Percentage for the editor width
   isDragging = false;
   selectedTab = 'code'; // 'code' or 'config' or 'diagram' for mobile
 
@@ -67,7 +78,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Resizer functionality
+  // Add the startDrag method used in the template
   startDrag(event: MouseEvent): void {
     if (!this.isBrowser) return;
 
@@ -78,23 +89,19 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     document.body.style.cursor = 'col-resize';
   }
 
-  @HostListener('document:mousemove', ['$event'])
-  onDrag = (event: MouseEvent): void => {
+  // Add these methods that would likely be needed by startDrag
+  private onDrag = (event: MouseEvent): void => {
     if (!this.isDragging || !this.isBrowser) return;
 
     const containerRect = this.workspaceContainer.nativeElement.getBoundingClientRect();
-    const offsetX = event.clientX - containerRect.left;
+    const newSplitRatio = ((event.clientX - containerRect.left) / containerRect.width) * 100;
 
-    // Calculate percentage
-    let percentage = (offsetX / containerRect.width) * 100;
+    // Constrain the split ratio to avoid panels becoming too small
+    if (newSplitRatio >= 20 && newSplitRatio <= 80) {
+      this.splitRatio = newSplitRatio;
+    }
+  }
 
-    // Limit the percentage between 20% and 80%
-    percentage = Math.max(20, Math.min(80, percentage));
-
-    this.splitRatio = percentage;
-  };
-
-  @HostListener('document:mouseup')
   stopDrag = (): void => {
     if (!this.isBrowser) return;
 
@@ -102,5 +109,5 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     document.removeEventListener('mousemove', this.onDrag);
     document.removeEventListener('mouseup', this.stopDrag);
     document.body.style.cursor = 'default';
-  };
+  }
 }

@@ -1,16 +1,30 @@
 import { Component, ElementRef, OnInit, OnDestroy, ViewChild, inject, AfterViewInit, NgZone, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { DiagramStateService } from '../../services/diagram-state.service';
 import { UtilsService } from '../../services/utils.service';
 import { Subscription, debounceTime } from 'rxjs';
 import mermaid from 'mermaid';
-// Don't import svg-pan-zoom directly at the top level
-// import svgPanZoom from 'svg-pan-zoom';
+
+// Add these imports for Angular Material
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-diagram',
   templateUrl: './diagram.component.html',
-  styleUrls: ['./diagram.component.scss']
+  styleUrls: ['./diagram.component.scss'],
+  standalone: true,  // Mark as standalone
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule
+  ]
 })
 export class DiagramComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('diagramContainer') diagramContainer!: ElementRef;
@@ -201,8 +215,8 @@ export class DiagramComponent implements OnInit, AfterViewInit, OnDestroy {
   private setupPanZoom(): void {
     if (!this.isBrowser) return;
 
-    import('svg-pan-zoom').then(module => {
-      const svgPanZoom = module.default;
+    import('svg-pan-zoom').then(svgPanZoom => {
+      // Use the module directly, not trying to access .default
 
       this.ngZone.runOutsideAngular(() => {
         try {
@@ -212,7 +226,7 @@ export class DiagramComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
           }
 
-          // Remove any max-width constraint again (in case it was added after rendering)
+          // Remove any max-width constraint
           svgElement.style.removeProperty('max-width');
 
           // Ensure SVG has proper dimensions

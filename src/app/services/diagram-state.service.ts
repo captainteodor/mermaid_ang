@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { LocalStorageService } from './local-storage.service.js';
+import { LocalStorageService } from './local-storage.service';
 
 // Base interface
 export interface DiagramState {

@@ -2,13 +2,20 @@ import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, OnDestroy, inj
 import { isPlatformBrowser } from '@angular/common';
 import { DiagramStateService, ValidatedState } from '../../services/diagram-state.service';
 import { UtilsService } from '../../services/utils.service';
+import { MonacoLoaderService } from '../../services/monaco-loader.service';
 import { Subscription } from 'rxjs';
-
-// Declare monaco as any to avoid type errors during SSR
-declare const monaco: any;
+import { NgIf } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-editor',
+  standalone: true,
+  imports: [
+    NgIf,
+    MatIconModule,
+    MatButtonModule
+  ],
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss']
 })
@@ -17,8 +24,9 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private diagramState = inject(DiagramStateService);
   private utils = inject(UtilsService);
+  private monacoLoader = inject(MonacoLoaderService);
 
-  private editor?: any; // Change type to any
+  private editor?: any;
   private subscription = new Subscription();
   private currentText = '';
   editorMode: 'code' | 'config' = 'code';
@@ -31,25 +39,6 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.isBrowser) {
-      // Configure Monaco worker
-      (window as any).MonacoEnvironment = {
-        getWorkerUrl: function(_moduleId: any, label: string) {
-          if (label === 'json') {
-            return './assets/monaco/json.worker.js';
-          }
-          if (label === 'css' || label === 'scss' || label === 'less') {
-            return './assets/monaco/css.worker.js';
-          }
-          if (label === 'html' || label === 'handlebars' || label === 'razor') {
-            return './assets/monaco/html.worker.js';
-          }
-          if (label === 'typescript' || label === 'javascript') {
-            return './assets/monaco/ts.worker.js';
-          }
-          return './assets/monaco/editor.worker.js';
-        }
-      };
-
       // Subscribe to state changes
       this.subscription.add(
         this.diagramState.state$.subscribe(state => {
@@ -79,7 +68,8 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
             const newLanguage = this.editorMode === 'code' ? 'mermaid' : 'json';
 
             if (currentLanguage !== newLanguage) {
-              monaco.editor.setModelLanguage(model, newLanguage);
+              const monaco = (window as any).monaco;
+              monaco?.editor.setModelLanguage(model, newLanguage);
             }
           }
         })
@@ -91,10 +81,8 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     // Skip Monaco initialization if not in browser
     if (!this.isBrowser) return;
 
-    // Dynamically import monaco editor only in browser
-    import('monaco-editor').then(monaco => {
-      this.initMonacoEditor(monaco);
-    });
+    // Initialize Monaco editor
+    this.initMonacoEditor();
   }
 
   ngOnDestroy(): void {
@@ -106,92 +94,43 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private initMonacoEditor(monaco: any): void {
-    // Safety check - should never happen but just in case
-    if (!this.isBrowser) return;
+  private async initMonacoEditor(): Promise<void> {
+    try {
+      const monaco = await this.monacoLoader.loadMonaco();
 
-    // Define the Mermaid language if it doesn't exist
-    if (!monaco.languages.getLanguages().some((lang: any) => lang.id === 'mermaid')) {
-      this.registerMermaidLanguage(monaco);
-    }
+      // Create editor with the loaded Monaco instance
+      this.editor = monaco.editor.create(this.editorContainer.nativeElement, {
+        value: this.currentText,
+        language: 'mermaid',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        minimap: {
+          enabled: false
+        },
+        scrollBeyondLastLine: false
+      });
 
-    // Create editor
-    this.editor = monaco.editor.create(this.editorContainer.nativeElement, {
-      value: this.currentText,
-      language: 'mermaid',
-      theme: 'vs-dark',
-      automaticLayout: true,
-      minimap: {
-        enabled: false
-      },
-      scrollBeyondLastLine: false
-    });
+      // Listen for changes
+      this.editor.onDidChangeModelContent(() => {
+        const newText = this.editor?.getValue() || '';
+        if (newText !== this.currentText) {
+          this.currentText = newText;
 
-    // Listen for changes
-    this.editor.onDidChangeModelContent(() => {
-      const newText = this.editor?.getValue() || '';
-      if (newText !== this.currentText) {
-        this.currentText = newText;
-
-        if (this.editorMode === 'code') {
-          this.diagramState.updateCode(newText, { updateDiagram: true });
-        } else {
-          this.diagramState.updateConfig(newText);
+          if (this.editorMode === 'code') {
+            this.diagramState.updateCode(newText, { updateDiagram: true });
+          } else {
+            this.diagramState.updateConfig(newText);
+          }
         }
-      }
-    });
+      });
 
-    // Get initial state
-    const initialState = this.diagramState.currentState;
-    this.currentText = this.editorMode === 'code' ? initialState.code : initialState.mermaid;
-    this.editor.setValue(this.currentText);
-  }
-
-  private registerMermaidLanguage(monaco: any): void {
-    // Safety check - should never happen but just in case
-    if (!this.isBrowser) return;
-
-    // This is a simplified version - would need to be expanded with proper syntax highlighting
-    monaco.languages.register({ id: 'mermaid' });
-
-    monaco.languages.setMonarchTokensProvider('mermaid', {
-      tokenizer: {
-        root: [
-          [/^\s*sequenceDiagram/, 'keyword'],
-          [/^\s*classDiagram/, 'keyword'],
-          [/^\s*classDiagram-v2/, 'keyword'],
-          [/^\s*flowchart/, 'keyword'],
-          [/^\s*graph/, 'keyword'],
-          [/^\s*stateDiagram/, 'keyword'],
-          [/^\s*stateDiagram-v2/, 'keyword'],
-          [/^\s*erDiagram/, 'keyword'],
-          [/^\s*gantt/, 'keyword'],
-          [/^\s*pie/, 'keyword'],
-          [/^\s*journey/, 'keyword'],
-          [/^\s*gitGraph/, 'keyword'],
-          [/-{2,}>/, 'string'],
-          [/==>/, 'string'],
-          [/[{}[\]()]/, 'delimiter.bracket'],
-          [/[A-Za-z][\w$]*/, 'identifier'],
-          [/".*?"/, 'string'],
-          [/%%.*$/, 'comment']
-        ]
-      }
-    });
-
-    monaco.editor.defineTheme('mermaid-dark', {
-      base: 'vs-dark',
-      inherit: true,
-      rules: [
-        { token: 'keyword', foreground: '569cd6', fontStyle: 'bold' },
-        { token: 'string', foreground: 'ce9178' },
-        { token: 'identifier', foreground: '9cdcfe' },
-        { token: 'comment', foreground: '6a9955' }
-      ],
-      colors: {}
-    });
-
-    monaco.editor.setTheme('mermaid-dark');
+      // Get initial state
+      const initialState = this.diagramState.currentState;
+      this.currentText = this.editorMode === 'code' ? initialState.code : initialState.mermaid;
+      this.editor.setValue(this.currentText);
+    } catch (error) {
+      console.error('Error initializing Monaco editor:', error);
+    }
   }
 
   toggleEditorMode(): void {

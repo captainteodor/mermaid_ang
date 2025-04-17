@@ -1,11 +1,26 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, Output, EventEmitter, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DiagramStateService } from '../../services/diagram-state.service';
 import { UtilsService } from '../../services/utils.service';
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss']
+  styleUrls: ['./toolbar.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatMenuModule,
+    MatTooltipModule
+  ]
 })
 export class ToolbarComponent {
   @Output() themeToggled = new EventEmitter<boolean>();
@@ -24,7 +39,7 @@ export class ToolbarComponent {
     const url = `${window.location.origin}${window.location.pathname}#${serialized}`;
     this.utils.copyToClipboard(url).then(() => {
       alert('Shareable link copied to clipboard!');
-    }).catch(err => {
+    }).catch((err: Error) => {
       console.error('Could not copy text: ', err);
       // Fallback
       prompt('Copy this link to share your diagram:', url);
@@ -39,6 +54,10 @@ export class ToolbarComponent {
   openSampleDiagrams(): void {
     // This would open the sample diagrams dialog
     alert('Sample diagrams feature will be available soon');
+  }
+
+  handleError(err: Error) {
+    console.error('Error:', err);
   }
 
   toggleTheme(): void {

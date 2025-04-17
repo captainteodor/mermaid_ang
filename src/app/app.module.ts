@@ -44,13 +44,9 @@ import { LocalStorageService } from './services/local-storage.service';
 
 @NgModule({
   declarations: [
-    // Include all components in declarations - now they're all non-standalone
+    // Include only non-standalone components here
     AppComponent,
-    ToolbarComponent,
-    EditorComponent,
-    DiagramComponent,
-    SimpleDiagramEditorComponent,
-    WorkspaceComponent  // Added WorkspaceComponent to declarations
+    SimpleDiagramEditorComponent
   ],
   imports: [
     // Core Angular Modules
@@ -61,6 +57,12 @@ import { LocalStorageService } from './services/local-storage.service';
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule.forRoot(routes),
+
+    // Your standalone components
+    EditorComponent,
+    ToolbarComponent,
+    WorkspaceComponent,
+    DiagramComponent,
 
     // Material Modules
     MatButtonModule,
