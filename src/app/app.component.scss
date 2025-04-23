@@ -1,0 +1,13 @@
+/* make app fill viewport */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* main area below header */
+.main-shell {
+  flex: 1 1 auto;
+  display: flex;
+  overflow: hidden;   // prevent scroll bleed
+}

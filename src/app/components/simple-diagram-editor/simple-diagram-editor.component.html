@@ -1,0 +1,38 @@
+<!-- Updated simple-diagram-editor.component.html -->
+<div class="editor-container">
+  <div class="editor-header">
+    <a class="editor-title" routerLink="/">SimpleDiagramEditor</a>
+
+    <div class="editor-tabs">
+      <button
+        [class.active]="editorMode === 'code'"
+        (click)="onTabChange('code')">
+        <mat-icon>code</mat-icon>
+        Code
+      </button>
+      <button
+        [class.active]="editorMode === 'config'"
+        (click)="onTabChange('config')">
+        <mat-icon>settings</mat-icon>
+        Config
+      </button>
+    </div>
+
+    <a href="https://mermaid.js.org/syntax/" target="_blank" class="docs-link">
+      <mat-icon>menu_book</mat-icon>
+      Documentation
+    </a>
+  </div>
+
+  <div class="editor-content">
+    <div class="resizable-panel editor-panel" [style.width.%]="editorWidth">
+      <app-editor></app-editor>
+    </div>
+
+    <div class="resizer" (mousedown)="startResize($event)"></div>
+
+    <div class="resizable-panel diagram-panel" [style.width.%]="100 - editorWidth">
+      <app-diagram></app-diagram>
+    </div>
+  </div>
+</div>

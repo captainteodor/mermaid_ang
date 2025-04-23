@@ -1,0 +1,28 @@
+# Create the patches directory if it doesn't exist
+mkdir -p patches/mermaid/dist/chunks/mermaid.core
+
+# Create the patch file
+cat > patches/mermaid+11.6.0.patch << 'EOL'
+diff --git a/node_modules/mermaid/dist/chunks/mermaid.core/chunk-C3MQ5ANM.mjs b/node_modules/mermaid/dist/chunks/mermaid.core/chunk-C3MQ5ANM.mjs
+index 2dbb4b5..2c73189 100644
+--- a/node_modules/mermaid/dist/chunks/mermaid.core/chunk-C3MQ5ANM.mjs
++++ b/node_modules/mermaid/dist/chunks/mermaid.core/chunk-C3MQ5ANM.mjs
+@@ -14,7 +14,7 @@ import {
+ import { select } from "d3";
+
+ // src/rendering-util/handle-markdown-text.ts
+-import { marked } from "marked";
++import * as markedModule from "marked"; const marked = markedModule.default || markedModule.marked || markedModule;
+ import { dedent } from "ts-dedent";
+ function preprocessMarkdown(markdown, { markdownAutoWrap }) {
+   const withoutBR = markdown.replace(/<br\/>/g, "\n");
+@@ -75,7 +75,7 @@ import {
+ } from "./chunk-UXIASGQL.mjs";
+
+ // node_modules/mermaid/dist/mermaid.core.mjs
+-import { marked } from "marked";
++import * as markedModule from "marked"; const marked = markedModule.default || markedModule.marked || markedModule;
+
+ // src/diagrams/common/commonDb.js
+ var defaultConfig = getConfig();
+EOL

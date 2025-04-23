@@ -1,0 +1,34 @@
+<!-- Updated diagram.component.html -->
+<div class="diagram-container" [ngClass]="{'grid-bg': showGrid, 'dark-mode': darkMode}">
+  <div class="diagram-toolbar">
+    <button mat-icon-button (click)="resetView()" matTooltip="Reset view">
+      <mat-icon>center_focus_strong</mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="zoomIn()" matTooltip="Zoom in">
+      <mat-icon>zoom_in</mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="zoomOut()" matTooltip="Zoom out">
+      <mat-icon>zoom_out</mat-icon>
+    </button>
+
+    <mat-divider [vertical]="true"></mat-divider>
+
+    <button mat-icon-button (click)="toggleGrid()" [matTooltip]="showGrid ? 'Hide grid' : 'Show grid'">
+      <mat-icon>grid_4x4</mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="toggleDarkMode()" [matTooltip]="darkMode ? 'Light mode' : 'Dark mode'">
+      <mat-icon>{{ darkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+  </div>
+
+  <div #diagramContainer class="diagram-content" [class.error]="error">
+    <!-- Mermaid diagram will be rendered here -->
+  </div>
+
+  <div *ngIf="loading" class="loading-overlay">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+</div>

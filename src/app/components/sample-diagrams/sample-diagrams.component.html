@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Sample Diagrams</h2>
+
+<mat-dialog-content>
+  <p class="dialog-description">
+    Choose a sample diagram to get started quickly with Mermaid syntax.
+  </p>
+
+  <div class="sample-grid">
+    <mat-card *ngFor="let category of categories" class="sample-card" (click)="selectSample(category.key)">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>{{category.icon}}</mat-icon>
+        <mat-card-title>{{category.name}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <pre class="sample-preview">{{getSamplePreview(category.key)}}</pre>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

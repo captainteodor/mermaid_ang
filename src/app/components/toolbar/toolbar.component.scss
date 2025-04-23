@@ -1,0 +1,79 @@
+/* Updated toolbar.component.scss */
+.app-toolbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
+  background-color: #3949ab !important; /* Match Svelte version's purple */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  height: 64px;
+  z-index: 100;
+}
+
+.toolbar-left, .toolbar-center, .toolbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.toolbar-left {
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    img {
+      height: 32px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .version {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-left: 8px;
+  }
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  button {
+    margin: 0;
+  }
+
+  [mat-icon-button] {
+    mat-icon {
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
+    }
+  }
+
+  [mat-flat-button] {
+    background-color: #ff4081 !important; /* Accent color to match Svelte */
+    color: white;
+    padding: 0 16px;
+    height: 36px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .toolbar-left .logo .title {
+    display: none;
+  }
+
+  .toolbar-left .version {
+    display: none;
+  }
+
+  .toolbar-right [mat-flat-button] .button-text {
+    display: none;
+  }
+}

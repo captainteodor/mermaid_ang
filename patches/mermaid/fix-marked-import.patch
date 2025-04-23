@@ -1,0 +1,22 @@
+diff --git a/node_modules/mermaid/dist/chunks/mermaid.core/chunk-C3MQ5ANM.mjs b/node_modules/mermaid/dist/chunks/mermaid.core/chunk-C3MQ5ANM.mjs
+index a123456..b654321 100644
+--- a/node_modules/mermaid/dist/chunks/mermaid.core/chunk-C3MQ5ANM.mjs
++++ b/node_modules/mermaid/dist/chunks/mermaid.core/chunk-C3MQ5ANM.mjs
+@@ -22,7 +22,7 @@ import { select } from "d3";
+ import { log } from "./chunk-UXIASGQL.mjs";
+
+ // node_modules/marked/lib/marked.esm.js
+-import { marked } from "marked";
++import * as markedModule from "marked"; const marked = markedModule.default || markedModule.marked || markedModule;
+
+ // node_modules/mermaid/dist/mermaid.core.mjs
+ var import_sanitize_url = __toESM(require_dist(), 1);
+@@ -73,7 +73,7 @@ var parseMember = function(key) {
+ };
+
+ // src/diagrams/common/commonDb.js
+-import { marked } from "marked";
++import * as markedModule from "marked"; const marked = markedModule.default || markedModule.marked || markedModule;
+ var defaultConfig = getConfig();
+ var sanitizeText = (text) => sanitizeUrl$1(text);
+ var clear = function() {
