@@ -42,7 +42,13 @@
                 "src"
               ]
             },
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "mermaid",
+              "marked",
+              "dompurify",
+              "svg-pan-zoom"
+            ]
           },
           "configurations": {
             "production": {

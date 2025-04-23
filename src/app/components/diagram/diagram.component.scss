@@ -19,7 +19,7 @@
 
   &.dark-mode {
     background-color: #1E293B;
-    color: #F8FAFC;
+    color: #F8FAFC; // Default dark mode text color
 
     &.grid-bg {
       background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
@@ -39,13 +39,18 @@
       }
     }
 
-    // Ensure text is visible in dark mode too
-    .diagram-content {
+    // Dark mode specific styles if needed, but removing overrides for now
+    /* .diagram-content {
+        color: var(--secondary-bg, #F8FAFC) !important;
         ::ng-deep svg text,
         ::ng-deep svg tspan {
-            fill: var(--secondary-bg, #F8FAFC) !important; // Force light fill color for dark mode
+            fill: yellow !important; // Remove debug style
+            color: yellow !important;
+            font-size: 12px !important;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
-    }
+    } */
   }
 
   .diagram-toolbar {
@@ -91,28 +96,31 @@
   .diagram-content {
     width: 100%; // Keep width: 100%
     height: 100%; // Keep height: 100%
-    // Removed display: flex, align-items, justify-content, padding
+    // color: var(--text-primary, #010618) !important; // Remove forced color
 
     &.error {
       opacity: 0.5;
     }
 
-    // Removed direct SVG styling from here - let TS attributes control it
-    /*
-    svg {
-      max-width: 100% !important;
-      width: auto !important;
-      height: auto !important;
-    }
-    */
+    // REMOVE SVG text overrides
+    /* ::ng-deep svg text,
+    ::ng-deep svg tspan {
+        fill: red !important; // Remove debug style
+        color: red !important;
+        font-size: 12px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    } */
 
-    // Force SVG text visibility using ::ng-deep
-    // This targets text elements within the SVG inside .diagram-content
-    ::ng-deep svg text,
-    ::ng-deep svg tspan { // Target both text and tspan elements
-        fill: var(--text-primary, #010618) !important; // Force dark fill color
-        stroke-width: 0; // Ensure stroke doesn't hide the fill
-    }
+    // REMOVE foreignObject overrides
+    /* ::ng-deep svg foreignObject div,
+    ::ng-deep svg foreignObject span,
+    ::ng-deep svg foreignObject p,
+    ::ng-deep svg foreignObject li,
+    ::ng-deep svg foreignObject code {
+        color: currentColor !important;
+        background: transparent !important;
+    } */
   }
 
   .error-message {
