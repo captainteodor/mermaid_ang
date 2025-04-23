@@ -1,5 +1,5 @@
 // Import Material theme as a baseline (remove this if you're completely dropping Angular Material)
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
+// @import '@angular/material/prebuilt-themes/indigo-pink.css';
 // Import the Inter font family
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
@@ -30,6 +30,16 @@
   --border-radius-sm: 4px;
   --border-radius-md: 6px;
   --border-radius-lg: 8px;
+}
+
+// Add a style for the new header
+.app-header {
+  background-color: var(--action-primary, #0D172B);
+  color: var(--action-text, #F8FAFC);
+  padding: 16px;
+  font-weight: 500;
+  font-size: 20px;
+  box-shadow: var(--shadow-sm);
 }
 
 // ============================

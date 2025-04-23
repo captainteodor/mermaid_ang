@@ -24,13 +24,12 @@ import { MonacoLoaderService } from '../../services/monaco-loader.service';
 import type * as monaco from 'monaco-editor';
 
 @Component({
-  selector: 'app-editor',
-  templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-  ],
+    selector: 'app-editor',
+    templateUrl: './editor.component.html',
+    styleUrls: ['./editor.component.scss'],
+    imports: [
+        CommonModule,
+    ]
 })
 export class EditorComponent
   implements OnInit, AfterViewInit, OnDestroy

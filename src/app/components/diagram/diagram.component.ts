@@ -6,13 +6,12 @@ import { Subscription, debounceTime } from 'rxjs';
 import mermaid from 'mermaid';
 
 @Component({
-  selector: 'app-diagram',
-  templateUrl: './diagram.component.html',
-  styleUrls: ['./diagram.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule
-  ]
+    selector: 'app-diagram',
+    templateUrl: './diagram.component.html',
+    styleUrls: ['./diagram.component.scss'],
+    imports: [
+        CommonModule
+    ]
 })
 export class DiagramComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('diagramContainer') diagramContainer!: ElementRef;

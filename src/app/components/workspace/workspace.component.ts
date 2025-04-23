@@ -8,16 +8,15 @@ import { DiagramComponent } from '../diagram/diagram.component';
 import { EditorComponent } from '../editor/editor.component';
 
 @Component({
-  selector: 'app-workspace',
-  templateUrl: './workspace.component.html',
-  styleUrls: ['./workspace.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    // REMOVE MatIconModule from imports
-    EditorComponent,
-    DiagramComponent
-  ]
+    selector: 'app-workspace',
+    templateUrl: './workspace.component.html',
+    styleUrls: ['./workspace.component.scss'],
+    imports: [
+        CommonModule,
+        // REMOVE MatIconModule from imports
+        EditorComponent,
+        DiagramComponent
+    ]
 })
 export class WorkspaceComponent implements OnInit, OnDestroy, AfterViewInit { // Implemented AfterViewInit
   @ViewChild('workspaceContainer') workspaceContainer!: ElementRef<HTMLDivElement>;

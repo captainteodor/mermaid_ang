@@ -9,16 +9,15 @@ import { DiagramComponent } from '../diagram/diagram.component';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-simple-diagram-editor',
-  templateUrl: './simple-diagram-editor.component.html',
-  styleUrls: ['./simple-diagram-editor.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    EditorComponent,
-    DiagramComponent
-  ]
+    selector: 'app-simple-diagram-editor',
+    templateUrl: './simple-diagram-editor.component.html',
+    styleUrls: ['./simple-diagram-editor.component.scss'],
+    imports: [
+        CommonModule,
+        RouterLink,
+        EditorComponent,
+        DiagramComponent
+    ]
 })
 export class SimpleDiagramEditorComponent implements OnInit, OnDestroy {
   @ViewChild('editorContainer') editorContainer?: ElementRef;
