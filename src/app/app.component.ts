@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
 
 @Component({
@@ -8,7 +7,6 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
   styleUrls: ['./app.component.scss'],
   standalone: true,
   imports: [
-    MatToolbarModule,
     WorkspaceComponent
   ]
 })

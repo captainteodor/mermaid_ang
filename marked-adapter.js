@@ -1,10 +1,13 @@
 // Import the actual marked package
 const markedPkg = require('marked');
 
-// Create a compatibility layer to handle the different export structure
-module.exports = markedPkg;
-module.exports.marked = markedPkg.marked || markedPkg.default || markedPkg;
-module.exports.default = markedPkg;
+// Create a compatibility layer that provides the exports Mermaid expects
+const markedFn = markedPkg.marked || markedPkg.default || markedPkg;
 
-// ES Module compatibility
+// Export both as default and as a named export to cover all bases
+module.exports = markedFn;
+module.exports.marked = markedFn;
+module.exports.default = markedFn;
+
+// Add __esModule flag for ES modules compatibility
 Object.defineProperty(module.exports, '__esModule', { value: true });

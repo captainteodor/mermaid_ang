@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, HostListener, Inject, PLATFORM_ID, inject } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterModule } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, inject, HostListener, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
 import { DiagramStateService } from '../../services/diagram-state.service';
 import { EditorComponent } from '../editor/editor.component';
 import { DiagramComponent } from '../diagram/diagram.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-simple-diagram-editor',
@@ -15,22 +15,25 @@ import { DiagramComponent } from '../diagram/diagram.component';
   standalone: true,
   imports: [
     CommonModule,
-    MatIconModule,
-    MatButtonModule,
-    RouterModule,
+    RouterLink,
     EditorComponent,
     DiagramComponent
   ]
 })
 export class SimpleDiagramEditorComponent implements OnInit, OnDestroy {
-  editorMode: string = 'code';
-  editorWidth: number = 50;
-  isDragging = false;
+  @ViewChild('editorContainer') editorContainer?: ElementRef;
 
-  // Add the three injected members
   private diagramState = inject(DiagramStateService);
   private subscription = new Subscription();
-  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private isBrowser: boolean;
+
+  editorMode: 'code' | 'config' = 'code';
+  editorWidth = 50; // Default split percentage
+  isDragging = false;
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnInit(): void {
     if (!this.isBrowser) return;
@@ -44,15 +47,15 @@ export class SimpleDiagramEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Properly unsubscribe to prevent memory leaks
     this.subscription.unsubscribe();
   }
 
-  onTabChange(mode: string): void {
+  onTabChange(mode: 'code' | 'config'): void {
     this.editorMode = mode;
-    this.diagramState.updateState({ editorMode: mode as 'code' | 'config' });
+    this.diagramState.updateState({ editorMode: mode });
   }
 
+  // Resizing functionality
   startResize(event: MouseEvent): void {
     if (!this.isBrowser) return;
 
@@ -65,7 +68,9 @@ export class SimpleDiagramEditorComponent implements OnInit, OnDestroy {
 
   @HostListener('window:resize')
   onWindowResize(): void {
+    // Adjust for mobile devices
     if (this.isBrowser && window.innerWidth < 768) {
+      // Reset to default on mobile
       this.editorWidth = 50;
     }
   }
@@ -73,8 +78,11 @@ export class SimpleDiagramEditorComponent implements OnInit, OnDestroy {
   private handleMouseMove = (event: MouseEvent): void => {
     if (!this.isDragging || !this.isBrowser) return;
 
+    // Calculate width based on mouse position
     const containerWidth = window.innerWidth;
     const newWidth = (event.clientX / containerWidth) * 100;
+
+    // Constrain within reasonable limits (20% to 80%)
     this.editorWidth = Math.max(20, Math.min(80, newWidth));
   };
 

@@ -1,50 +1,19 @@
 <div class="workspace-container" #workspaceContainer>
-  <!-- Mobile View -->
-  <div *ngIf="isMobile" class="mobile-workspace">
-    <div class="tabs">
-      <button
-        [class.active]="selectedTab === 'code'"
-        (click)="onTabChange('code')">
-        <mat-icon>code</mat-icon> Code
-      </button>
-      <button
-        [class.active]="selectedTab === 'config'"
-        (click)="onTabChange('config')">
-        <mat-icon>settings</mat-icon> Config
-      </button>
-      <button
-        [class.active]="selectedTab === 'diagram'"
-        (click)="onTabChange('diagram')">
-        <mat-icon>insert_chart</mat-icon> Diagram
-      </button>
-    </div>
-
-    <div class="content">
-      <div *ngIf="selectedTab !== 'diagram'" class="editor-container">
-        <app-editor></app-editor>
-      </div>
-      <div *ngIf="selectedTab === 'diagram'" class="diagram-container">
-        <app-diagram></app-diagram>
-      </div>
-    </div>
-  </div>
-
-  <!-- Desktop View -->
-  <div *ngIf="!isMobile" class="desktop-workspace">
+  <div class="desktop-workspace">
     <div class="editor-panel" [style.width.%]="splitRatio">
       <div class="editor-tabs">
         <button
           [class.active]="selectedTab === 'code'"
           (click)="onTabChange('code')">
-          <mat-icon>code</mat-icon> Code
+          <span class="icon icon-code"></span> Code
         </button>
         <button
           [class.active]="selectedTab === 'config'"
           (click)="onTabChange('config')">
-          <mat-icon>settings</mat-icon> Config
+           <span class="icon icon-settings"></span> Config
         </button>
         <a href="https://mermaid.js.org/syntax/" target="_blank" class="docs-link">
-          <mat-icon>help_outline</mat-icon> Documentation
+          <span class="icon icon-help"></span> Documentation
         </a>
       </div>
       <div class="editor-container">
@@ -57,5 +26,23 @@
     <div class="diagram-panel" [style.width.%]="100 - splitRatio">
       <app-diagram></app-diagram>
     </div>
+  </div>
+
+  <div *ngIf="isMobile" class="mobile-tabs">
+     <button
+      [class.active]="selectedTab === 'code'"
+      (click)="onTabChange('code')">
+      <span class="icon icon-code"></span> Code
+    </button>
+    <button
+      [class.active]="selectedTab === 'config'"
+      (click)="onTabChange('config')">
+      <span class="icon icon-settings"></span> Config
+    </button>
+    <button
+      [class.active]="selectedTab === 'diagram'"
+      (click)="onTabChange('diagram')">
+       <span class="icon icon-chart"></span> Diagram
+    </button>
   </div>
 </div>

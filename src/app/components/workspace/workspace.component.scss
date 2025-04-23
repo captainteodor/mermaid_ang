@@ -1,167 +1,249 @@
-.workspace-container {
+/* Updated workspace.component.scss */
+
+/* The <app-workspace> element itself */
+:host {
+  flex: 1 1 auto;
   display: flex;
-  height: calc(100vh - 64px); // Subtract toolbar height
-  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+}
 
-  // Mobile layout
-  .mobile-workspace {
-    width: 100%;
-    height: 100%;
-    display: flex;
+/* Chain of wrappers */
+.workspace-container,
+.desktop-workspace {
+  flex: 1 1 auto;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Left / right columns */
+.editor-panel {
+  // Using CSS variable set by TS for resizer functionality
+  flex: 0 0 var(--editor-basis, 40%);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%; // Ensure panel takes full height within flex container
+}
+
+.diagram-panel {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  height: 100%; // Ensure panel takes full height within flex container
+  overflow: hidden; // Prevent internal content overflow issues
+}
+
+.workspace-container {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch; // Stretch children vertically
+  padding: 8px;
+  gap: 8px;
+  width: 100%;
+  height: 100%; // Take full available height
+  background: var(--primary-bg); // Use variable
+  border: 1px solid var(--border-color); // Use variable
+  box-shadow: var(--shadow-sm); // Use variable
+  border-radius: var(--border-radius-lg); // Use variable
+  overflow: hidden; // Prevent container overflow
+
+  // Mobile layout should be stacked
+  @media (max-width: 768px) {
     flex-direction: column;
-
-    .tabs {
-      display: flex;
-      justify-content: space-around;
-      background-color: #f5f5f5;
-      border-bottom: 1px solid #e0e0e0;
-
-      button {
-        flex: 1;
-        border: none;
-        background: none;
-        padding: 12px 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        font-size: 14px;
-        cursor: pointer;
-        color: #757575;
-        transition: all 0.2s ease;
-
-        &.active {
-          color: #1976d2;
-          border-bottom: 2px solid #1976d2;
-          background-color: rgba(25, 118, 210, 0.05);
-        }
-
-        &:hover {
-          background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        mat-icon {
-          font-size: 18px;
-          height: 18px;
-          width: 18px;
-        }
-      }
-    }
-
-    .content {
-      flex: 1;
-      overflow: hidden;
-    }
+    height: auto; // Allow height to adjust to content
+    min-height: 100vh; // Ensure it fills viewport height
+    overflow: visible; // Allow scrolling if content overflows
   }
 
-  // Desktop layout
   .desktop-workspace {
     display: flex;
     width: 100%;
     height: 100%;
+    min-height: 0; // Critical for flex children height calculation
+    overflow: hidden;
 
     .editor-panel {
+      /* width is controlled by --editor-basis */
+      /* height: 100%; // Inherited */
+      border-radius: var(--border-radius-lg); // Use variable
+      background: var(--secondary-bg); // Use variable
+      border: 1px solid var(--border-color); // Use variable
+      padding: 16px; // Add padding inside the panel
+      gap: 12px; // Add gap between tabs and editor container
       display: flex;
       flex-direction: column;
-      height: 100%;
-
-      .editor-tabs {
-        display: flex;
-        background-color: #f5f5f5;
-        border-bottom: 1px solid #e0e0e0;
-
-        button, .docs-link {
-          padding: 12px 16px;
-          border: none;
-          background: none;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 14px;
-          cursor: pointer;
-          color: #757575;
-          transition: all 0.2s ease;
-          text-decoration: none;
-
-          &.active {
-            color: #1976d2;
-            border-bottom: 2px solid #1976d2;
-            background-color: rgba(25, 118, 210, 0.05);
-          }
-
-          &:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-          }
-
-          mat-icon {
-            font-size: 18px;
-            height: 18px;
-            width: 18px;
-          }
-        }
-
-        .docs-link {
-          margin-left: auto;
-        }
-      }
-
-      .editor-container {
-        flex: 1;
-        overflow: hidden;
-      }
     }
 
     .resizer {
       width: 6px;
-      background-color: #e0e0e0;
+      background-color: var(--border-color); // Use variable
       cursor: col-resize;
-      transition: background-color 0.2s ease;
-
-      &:hover, &:active {
-        background-color: #1976d2;
+      flex-shrink: 0; // Prevent resizer from shrinking
+      &:hover, &.active { // Use class added by TS potentially
+         background-color: var(--text-secondary); // Or an accent color variable
       }
     }
 
     .diagram-panel {
-      flex: 1;
-      height: 100%;
-      overflow: hidden;
+      flex: 1; // Panel grows
+      /* height: 100%; // Inherited */
+      border-radius: var(--border-radius-lg); // Use variable
+      background: var(--primary-bg); // Use variable
     }
   }
 
-  .editor-container, .diagram-container {
-    height: 100%;
-    overflow: hidden;
+  // Shared tab styles
+  .editor-tabs, .mobile-tabs {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; // Align items to the top
+    padding: 5px;
+    width: 100%;
+    height: 42px; // Fixed height
+    background: var(--tertiary-bg); // Use variable
+    border-radius: var(--border-radius-md); // Use variable
+    flex-shrink: 0; // Prevent tabs container from shrinking
+
+    button, .docs-link {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 6px 12px;
+      gap: 10px; // Use variable if available
+      height: 32px; // Fixed height for inner elements
+      border-radius: var(--border-radius-sm); // Use variable (was 2px)
+      border: none;
+      background: transparent;
+      font-family: inherit; // Inherit from body
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px; // Use variable if available
+      line-height: 20px; // Use variable if available
+      color: var(--text-secondary); // Use variable
+      cursor: pointer;
+      flex-grow: 1; // Let buttons share space
+      text-decoration: none; // For docs-link
+
+      .icon {
+         width: 16px; // Consistent icon size
+         height: 16px;
+      }
+
+      &.active {
+        background: var(--primary-bg); // Use variable
+        color: var(--text-primary); // Use variable
+        box-shadow: var(--shadow-sm); // Use variable
+        // border-radius: var(--border-radius-sm); // Already set above
+      }
+
+      &:hover:not(.active) {
+         background-color: rgba(0, 0, 0, 0.03); // Or use a hover variable
+      }
+    }
+     .docs-link {
+        flex-grow: 0; // Don't let the link grow
+        margin-left: auto; // Push link to the right
+        color: var(--text-tertiary); // Use variable
+     }
+  }
+
+   .mobile-tabs {
+      display: none; // Hide mobile tabs by default
+      margin-top: 8px; // Add space when stacked
+   }
+
+   // Show mobile tabs and hide desktop workspace content on mobile
+   @media (max-width: 768px) {
+       .desktop-workspace {
+          flex-direction: column; // Stack panels vertically
+          height: auto;
+          overflow: visible; // Allow content to scroll
+
+          .editor-panel {
+             width: 100%;
+             height: 50vh; // Example height, adjust as needed
+             min-height: 300px; // Example min-height
+             padding: 8px; // Adjust padding for mobile
+          }
+          .resizer {
+             display: none; // Hide resizer on mobile
+          }
+          .diagram-panel {
+             width: 100%;
+             height: 50vh; // Example height, adjust as needed
+             min-height: 300px; // Example min-height
+          }
+
+          // Hide panels based on selected tab
+          .editor-panel:not(.visible-mobile),
+          .diagram-panel:not(.visible-mobile) {
+             display: none;
+          }
+       }
+       .mobile-tabs {
+          display: flex; // Show mobile tabs
+       }
+   }
+
+  .editor-container {
+    flex: 1; // Allow editor container to fill remaining space in editor-panel
+    display: flex; // Needed for app-editor potentially
+    min-height: 0; // Allow shrinking
+    border-radius: var(--border-radius-lg); // Add border radius
+    overflow: hidden; // Hide overflow from editor itself
+    border: 1px solid var(--border-color); // Add border like in design
+    background: var(--primary-bg); // Use variable for editor background
   }
 }
 
-// Dark theme adjustments
+// Dark theme adjustments (replace hardcoded values with variables if available)
 :host-context(.dark-theme) {
-  .mobile-workspace .tabs,
-  .desktop-workspace .editor-tabs {
-    background-color: #2d2d2d;
-    border-color: #444;
+  .workspace-container {
+    background: var(--dark-primary-bg, #1a1a1a); // Example variable
+    border-color: var(--dark-border-color, #444); // Example variable
 
-    button, .docs-link {
-      color: #b0b0b0;
-
-      &.active {
-        color: #64b5f6;
-        border-color: #64b5f6;
-        background-color: rgba(100, 181, 246, 0.1);
-      }
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.05);
-      }
+    .desktop-workspace {
+        .editor-panel {
+             background: var(--dark-secondary-bg, #2a2a2a); // Example variable
+             border-color: var(--dark-border-color, #444); // Example variable
+        }
+         .resizer {
+             background-color: var(--dark-border-color, #444); // Example variable
+             &:hover, &.active {
+                background-color: var(--dark-accent-color, #64b5f6); // Example variable
+             }
+         }
+          .diagram-panel {
+             background: var(--dark-primary-bg, #1a1a1a); // Example variable
+          }
     }
-  }
 
-  .desktop-workspace .resizer {
-    background-color: #444;
+     .editor-tabs, .mobile-tabs {
+         background-color: var(--dark-tertiary-bg, #2d2d2d); // Example variable
 
-    &:hover, &:active {
-      background-color: #64b5f6;
-    }
+         button, .docs-link {
+             color: var(--dark-text-secondary, #b0b0b0); // Example variable
+
+             &.active {
+                 color: var(--dark-text-primary, #e0e0e0); // Example variable
+                 background-color: var(--dark-secondary-bg, #2a2a2a); // Example variable
+                 box-shadow: var(--dark-shadow-sm, 0px 1px 2px rgba(0, 0, 0, 0.2)); // Example variable
+             }
+             &:hover:not(.active) {
+                 background-color: rgba(255, 255, 255, 0.05); // Or dark hover variable
+             }
+         }
+         .docs-link {
+             color: var(--dark-text-tertiary, #cccccc); // Example variable
+         }
+     }
+     .editor-container {
+        background: var(--dark-secondary-bg, #2a2a2a); // Example variable
+        border-color: var(--dark-border-color, #444); // Example variable
+     }
   }
 }

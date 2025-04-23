@@ -1,17 +1,23 @@
 /* Updated toolbar.component.scss */
+@use '../../styles/variables' as vars; // Example: If you extract variables
+
 .app-toolbar {
   display: flex;
   justify-content: space-between;
+  align-items: center; // Ensure vertical alignment
   padding: 0 16px;
-  background-color: #3949ab !important; /* Match Svelte version's purple */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  height: 64px;
-  z-index: 100;
+  // Use variables from styles.scss
+  background-color: var(--primary-bg); // Or another appropriate variable
+  box-shadow: var(--shadow-sm);
+  height: 64px; // Keep if specified, or use variable
+  z-index: 100; // Keep if needed for stacking
+  border-bottom: 1px solid var(--border-color); // Match styles.scss example
 }
 
 .toolbar-left, .toolbar-center, .toolbar-right {
   display: flex;
   align-items: center;
+  gap: 8px; // Keep gap or use variable
 }
 
 .toolbar-left {
@@ -21,49 +27,86 @@
     gap: 8px;
 
     img {
-      height: 32px;
+      height: 32px; // Keep size or use variable
     }
 
     .title {
-      font-size: 18px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
+      font-size: 18px; // Keep size or use variable
+      font-weight: 500; // Keep weight or use variable
+      letter-spacing: 0.5px; // Keep spacing or use variable
+      color: var(--text-primary); // Use variable
     }
   }
 
   .version {
-    font-size: 12px;
-    opacity: 0.8;
+    font-size: 12px; // Keep size or use variable
+    color: var(--text-secondary); // Use variable
+    opacity: 1; // Remove opacity if text-secondary is sufficient
     margin-left: 8px;
   }
 }
 
 .toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  button {
-    margin: 0;
-  }
-
-  [mat-icon-button] {
-    mat-icon {
-      font-size: 20px;
-      height: 20px;
-      width: 20px;
+  .icon-button {
+    // Styles are likely inherited from .icon-button in styles.scss
+    // Add specific overrides if needed
+    .icon {
+       width: 20px; // Override if needed from styles.scss
+       height: 20px; // Override if needed from styles.scss
     }
   }
 
-  [mat-flat-button] {
-    background-color: #ff4081 !important; /* Accent color to match Svelte */
-    color: white;
-    padding: 0 16px;
-    height: 36px;
+  .send-button {
+    // Styles are likely inherited from .send-button in styles.scss
+    // Ensure it matches the desired appearance (e.g., background: var(--action-primary))
+    padding: 0 16px; // Keep padding or use variable
+    height: 36px; // Keep height or use variable
+  }
+
+  // Basic Dropdown Styles (Refine these)
+  .dropdown-container {
+    position: relative;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--primary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 4px 0;
+    z-index: 110; // Above toolbar
+    min-width: 150px;
+  }
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--tertiary-bg);
+    }
+
+    .icon {
+      width: 16px;
+      height: 16px;
+      color: var(--text-secondary); // Or adjust as needed
+    }
   }
 }
 
-/* Responsive adjustments */
+
+/* Responsive adjustments - Keep or modify as needed */
 @media (max-width: 600px) {
   .toolbar-left .logo .title {
     display: none;
@@ -73,7 +116,10 @@
     display: none;
   }
 
-  .toolbar-right [mat-flat-button] .button-text {
+  .toolbar-right .send-button .button-text {
     display: none;
+  }
+   .toolbar-right .send-button .icon { // Ensure icon is visible
+    margin-right: 0;
   }
 }

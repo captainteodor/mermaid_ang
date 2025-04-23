@@ -1,27 +1,21 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 import { DiagramStateService } from '../../services/diagram-state.service';
 
 @Component({
   selector: 'app-sample-diagrams',
   standalone: true,
   imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule
+    CommonModule
   ],
   templateUrl: './sample-diagrams.component.html',
   styleUrl: './sample-diagrams.component.scss'
 })
 export class SampleDiagramsComponent {
   private diagramState = inject(DiagramStateService);
-  private dialogRef = inject(MatDialogRef<SampleDiagramsComponent>);
+
+  // Add an event emitter for closing the dialog
+  @Output() closeDialog = new EventEmitter<void>();
 
   samples = {
     flowchart: `flowchart TD
@@ -94,13 +88,13 @@ export class SampleDiagramsComponent {
   };
 
   categories = [
-    { name: 'Flowchart', key: 'flowchart', icon: 'account_tree' },
-    { name: 'Sequence Diagram', key: 'sequence', icon: 'format_list_numbered' },
-    { name: 'Class Diagram', key: 'class', icon: 'view_module' },
-    { name: 'State Diagram', key: 'state', icon: 'hub' },
+    { name: 'Flowchart', key: 'flowchart', icon: 'diagram-tree' },
+    { name: 'Sequence Diagram', key: 'sequence', icon: 'list-numbered' },
+    { name: 'Class Diagram', key: 'class', icon: 'module' },
+    { name: 'State Diagram', key: 'state', icon: 'network' },
     { name: 'Entity Relationship', key: 'er', icon: 'share' },
-    { name: 'Gantt Chart', key: 'gantt', icon: 'date_range' },
-    { name: 'Pie Chart', key: 'pie', icon: 'pie_chart' }
+    { name: 'Gantt Chart', key: 'gantt', icon: 'calendar' },
+    { name: 'Pie Chart', key: 'pie', icon: 'pie' }
   ];
 
   selectSample(key: string): void {
@@ -108,7 +102,7 @@ export class SampleDiagramsComponent {
       updateDiagram: true,
       resetPanZoom: true
     });
-    this.dialogRef.close();
+    this.close();
   }
 
   getSamplePreview(key: string): string {
@@ -116,5 +110,10 @@ export class SampleDiagramsComponent {
     const sample = this.samples[key as keyof typeof this.samples];
     if (!sample) return '';
     return sample.substring(0, 100) + (sample.length > 100 ? '...' : '');
+  }
+
+  // Helper method to close the dialog
+  close(): void {
+    this.closeDialog.emit();
   }
 }

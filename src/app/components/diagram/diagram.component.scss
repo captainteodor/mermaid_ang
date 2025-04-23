@@ -1,12 +1,16 @@
-/* Updated diagram.component.scss */
-.diagram-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
+:host {
+  display: block; // Ensure it behaves like a block-level element
   width: 100%;
   height: 100%;
-  background-color: #ffffff;
-  transition: background-color 0.3s ease;
+}
+
+.diagram-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-bg, #FFFFFF);
+  border-radius: var(--border-radius-lg, 8px);
+  overflow: hidden;
 
   &.grid-bg {
     background-size: 30px 30px;
@@ -14,72 +18,231 @@
   }
 
   &.dark-mode {
-    background-color: #2d2d2d;
-    color: #ffffff;
+    background-color: #1E293B;
+    color: #F8FAFC;
 
     &.grid-bg {
       background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
     }
+
+    .diagram-toolbar {
+      background: #334155;
+
+      button {
+        &:hover {
+          background: #475569;
+        }
+
+        .icon {
+          color: #CBD5E1;
+        }
+      }
+    }
+
+    // Ensure text is visible in dark mode too
+    .diagram-content {
+        ::ng-deep svg text,
+        ::ng-deep svg tspan {
+            fill: var(--secondary-bg, #F8FAFC) !important; // Force light fill color for dark mode
+        }
+    }
+  }
+
+  .diagram-toolbar {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    background: var(--primary-bg, #FFFFFF);
+    box-shadow: var(--shadow-md, 0px 2px 4px rgba(0, 0, 0, 0.1));
+    border-radius: var(--border-radius-lg, 8px);
+    overflow: hidden;
+    z-index: 10;
+
+    button.icon-button {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--tertiary-bg, #F0F5F9);
+      }
+
+      .icon {
+        width: 18px;
+        height: 18px;
+        color: var(--text-secondary, #60758D);
+      }
+    }
+
+    .divider {
+      height: 1px;
+      background-color: var(--border-color, #E1E8F1);
+      margin: 4px 8px;
+    }
+  }
+
+  .diagram-content {
+    width: 100%; // Keep width: 100%
+    height: 100%; // Keep height: 100%
+    // Removed display: flex, align-items, justify-content, padding
+
+    &.error {
+      opacity: 0.5;
+    }
+
+    // Removed direct SVG styling from here - let TS attributes control it
+    /*
+    svg {
+      max-width: 100% !important;
+      width: auto !important;
+      height: auto !important;
+    }
+    */
+
+    // Force SVG text visibility using ::ng-deep
+    // This targets text elements within the SVG inside .diagram-content
+    ::ng-deep svg text,
+    ::ng-deep svg tspan { // Target both text and tspan elements
+        fill: var(--text-primary, #010618) !important; // Force dark fill color
+        stroke-width: 0; // Ensure stroke doesn't hide the fill
+    }
+  }
+
+  .error-message {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 80px; // Make space for the toolbar
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background-color: var(--error-bg, #FEF2F2);
+    border: 1px solid var(--error-border, #FCA5A5);
+    color: var(--error-text, #B91C1C);
+    border-radius: var(--border-radius-md, 6px);
+    z-index: 5;
+    max-width: 600px;
+
+    .close-button {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: var(--error-text, #B91C1C);
+      cursor: pointer;
+      margin-left: 8px;
+    }
+  }
+
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 20;
+
+    .loader {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid var(--tertiary-bg, #F0F5F9);
+      border-top-color: var(--text-tertiary, #0D172B);
+      animation: spin 1s linear infinite;
+    }
+
+    .dark-mode & {
+      background-color: rgba(0, 0, 0, 0.5);
+
+      .loader {
+        border-color: #2D3748;
+        border-top-color: #A0AEC0;
+      }
+    }
   }
 }
 
-.diagram-toolbar {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
-  padding: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  .dark-mode & {
-    background-color: rgba(48, 48, 48, 0.9);
-  }
-
-  mat-divider {
-    height: 24px;
-    margin: 0 4px;
-  }
-
-  button {
-    margin: 0 2px;
-  }
+// Icon styles from paste.txt
+.icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
-.diagram-content {
-  flex-grow: 1;
-  overflow: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-
-  &.error {
-    opacity: 0.5;
-  }
-
-  svg {
-    max-width: 100% !important;
-    width: auto !important;
-    height: auto !important;
-  }
+.icon-code {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>');
 }
 
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.7);
+.icon-settings {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>');
+}
 
-  .dark-mode & {
-    background-color: rgba(0, 0, 0, 0.5);
+.icon-zoom-in {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>');
+}
+
+.icon-zoom-out {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>');
+}
+
+.icon-reset {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>');
+}
+
+.icon-grid {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>');
+}
+
+.icon-light {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>');
+}
+
+.icon-dark {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>');
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Responsive adjustments
+@media screen and (max-width: 768px) {
+  .diagram-container {
+    .diagram-toolbar {
+      flex-direction: row;
+      top: auto;
+      bottom: 16px;
+      right: 16px;
+      padding: 4px;
+
+      .divider {
+        width: 1px;
+        height: 24px;
+        margin: 0 4px;
+      }
+    }
+
+    .error-message {
+      top: auto;
+      bottom: 70px; // Above the toolbar
+      left: 16px;
+      right: 16px;
+      max-width: none;
+    }
   }
 }

@@ -1,44 +1,59 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { DiagramStateService } from '../../services/diagram-state.service';
 import { UtilsService } from '../../services/utils.service';
+
+interface DialogCloseOptions {
+  refresh?: boolean;
+}
+
+// Custom notification service to replace MatSnackBar
+export class NotificationService {
+  showNotification(message: string, action: string = 'OK', duration: number = 3000): void {
+    const notification = document.createElement('div');
+    notification.className = 'notification-toast';
+
+    const messageSpan = document.createElement('span');
+    messageSpan.textContent = message;
+    notification.appendChild(messageSpan);
+
+    const actionButton = document.createElement('button');
+    actionButton.textContent = action;
+    actionButton.className = 'notification-action';
+    actionButton.onclick = () => document.body.removeChild(notification);
+    notification.appendChild(actionButton);
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+      }
+    }, duration);
+  }
+}
 
 @Component({
   selector: 'app-export-dialog',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatTabsModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatSliderModule,
-    MatCheckboxModule,
-    MatIconModule,
-    MatSnackBarModule
+    FormsModule
   ],
   templateUrl: './export-dialog.component.html',
-  styleUrl: './export-dialog.component.scss'
+  styleUrl: './export-dialog.component.scss',
+  providers: [NotificationService]
 })
 export class ExportDialogComponent {
+  @Output() closeDialog = new EventEmitter<DialogCloseOptions>();
+
   private diagramState = inject(DiagramStateService);
   private utils = inject(UtilsService);
-  private dialogRef = inject(MatDialogRef<ExportDialogComponent>);
-  private snackBar = inject(MatSnackBar);
+  private notificationService = inject(NotificationService);
+
+  // Active tab tracking
+  activeTab = 'png'; // Default tab
 
   // PNG export settings
   pngSettings = signal({
@@ -61,22 +76,28 @@ export class ExportDialogComponent {
     includeTheme: true
   });
 
+  // Change active tab
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
+  }
+
+  // Close dialog method to replace dialogRef.close()
+  close(options?: DialogCloseOptions): void {
+    this.closeDialog.emit(options || {});
+  }
+
   // This would be implemented in a real application to generate PNG
   exportAsPng(): void {
     // In a real implementation, this would use a service to generate PNG
-    this.snackBar.open('PNG export feature coming soon!', 'OK', {
-      duration: 3000
-    });
-    this.dialogRef.close();
+    this.notificationService.showNotification('PNG export feature coming soon!');
+    this.close();
   }
 
   // This would be implemented in a real application to generate SVG
   exportAsSvg(): void {
     // In a real implementation, this would use a service to generate SVG
-    this.snackBar.open('SVG export feature coming soon!', 'OK', {
-      duration: 3000
-    });
-    this.dialogRef.close();
+    this.notificationService.showNotification('SVG export feature coming soon!');
+    this.close();
   }
 
   // Share URL implementation
@@ -86,15 +107,11 @@ export class ExportDialogComponent {
 
     const url = `${window.location.origin}${window.location.pathname}#${serialized}`;
     this.utils.copyToClipboard(url).then(() => {
-      this.snackBar.open('URL copied to clipboard!', 'OK', {
-        duration: 3000
-      });
-      this.dialogRef.close();
+      this.notificationService.showNotification('URL copied to clipboard!');
+      this.close();
     }).catch(err => {
       console.error('Could not copy text: ', err);
-      this.snackBar.open('Failed to copy URL', 'OK', {
-        duration: 3000
-      });
+      this.notificationService.showNotification('Failed to copy URL');
     });
   }
 

@@ -1,53 +1,35 @@
 <div class="editor-page">
-  <mat-toolbar color="primary">
-    <span class="logo">
-      <img src="assets/favicon.svg" alt="Mermaid Logo" height="32">
-      Mermaid Live Editor
-    </span>
+  <header class="page-header">
+    <div class="header-actions">
+        <button class="icon-button" title="History" (click)="toggleHistory()">
+          <span class="icon icon-history"></span>
+        </button>
+        <button class="icon-button" title="Share Diagram" (click)="shareDiagram()">
+          <span class="icon icon-share"></span>
+        </button>
+        <button class="icon-button" title="Export Diagram" (click)="exportDiagram()">
+          <span class="icon icon-download"></span>
+        </button>
+        <button class="action-button" (click)="openSaveDialog()">
+          <span class="icon icon-save"></span>
+          Save
+        </button>
+      </div>
+    </header>
 
-    <span class="spacer"></span>
-
-    <button mat-icon-button matTooltip="History" (click)="toggleHistory()">
-      <mat-icon>history</mat-icon>
-    </button>
-
-    <button mat-icon-button matTooltip="Share Diagram" (click)="shareDiagram()">
-      <mat-icon>share</mat-icon>
-    </button>
-
-    <button mat-icon-button matTooltip="Export Diagram" (click)="exportDiagram()">
-      <mat-icon>download</mat-icon>
-    </button>
-
-    <button mat-raised-button color="accent" (click)="openSaveDialog()">
-      <mat-icon>save</mat-icon>
-      Save
-    </button>
-  </mat-toolbar>
-
-  <!-- Mobile View Toggle -->
   <div *ngIf="isMobile" class="mobile-toggle">
-    <mat-button-toggle-group [value]="activeView" (change)="switchView($event.value)">
-      <mat-button-toggle value="editor">Editor</mat-button-toggle>
-      <mat-button-toggle value="diagram">Diagram</mat-button-toggle>
-    </mat-button-toggle-group>
+     <div class="toggle-container">
+      <button
+        [class.active]="activeView === 'editor'"
+        (click)="switchView('editor')">Editor</button>
+      <button
+        [class.active]="activeView === 'diagram'"
+        (click)="switchView('diagram')">Diagram</button>
+    </div>
   </div>
 
-  <!-- Main Content -->
   <div class="content-container" [ngClass]="{'mobile': isMobile, 'with-history': isHistoryOpen, 'view-editor': activeView === 'editor', 'view-diagram': activeView === 'diagram'}">
-    <!-- Editor Panel -->
-    <div class="editor-panel">
-      <app-editor></app-editor>
-    </div>
-
-    <!-- Diagram Panel -->
-    <div class="diagram-panel">
-      <app-diagram></app-diagram>
-    </div>
-
-    <!-- History Panel (optional) -->
     <div *ngIf="isHistoryOpen && !isMobile" class="history-panel">
-      <!-- History component would go here -->
       <div class="placeholder-content">
         <h3>History Panel</h3>
         <p>This is where the history component would be displayed.</p>

@@ -1,4 +1,3 @@
-/* src/app/components/editor/editor.component.ts */
 import {
   Component,
   OnInit,
@@ -14,12 +13,6 @@ import {
   CommonModule,
   isPlatformBrowser,
 } from '@angular/common';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltipModule } from '@angular/material/tooltip';
-
 import { Subscription } from 'rxjs';
 
 import {
@@ -32,16 +25,11 @@ import type * as monaco from 'monaco-editor';
 
 @Component({
   selector: 'app-editor',
-  standalone: true,
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
+  standalone: true,
   imports: [
     CommonModule,
-    MatButtonToggleModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatTooltipModule,
   ],
 })
 export class EditorComponent
@@ -129,6 +117,19 @@ export class EditorComponent
     if (!this.isBrowser || !this.editor) return;
     this.isWordWrapEnabled = !this.isWordWrapEnabled;
     this.editor.updateOptions({ wordWrap: this.isWordWrapEnabled ? 'on' : 'off' });
+  }
+
+  /**
+   * Updates the diagram with the current editor content
+   */
+  updateDiagram(): void {
+    if (!this.editor) return;
+
+    const code = this.editor.getValue();
+    this.diagramState.updateCode(code, {
+      updateDiagram: true,
+      resetPanZoom: true
+    });
   }
 
   /* ------------------------------------------------------------------ */

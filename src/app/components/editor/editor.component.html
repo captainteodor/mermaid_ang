@@ -1,112 +1,54 @@
-<!-- ──────────────── top toolbar ──────────────── -->
-<div class="editor-toolbar mat-elevation-z2">
-  <!-- Code / Config tabs -->
-  <mat-button-toggle-group
-    [value]="editorMode"
-    (change)="onTabChange($event.value)"
-    aria-label="Editor mode"
-    appearance="legacy"
-  >
-    <mat-button-toggle value="code">Code</mat-button-toggle>
-    <mat-button-toggle value="config">Config</mat-button-toggle>
-  </mat-button-toggle-group>
+<!-- Editor container with controls -->
+<div class="editor-container">
+  <!-- Error message display -->
+  <div *ngIf="error" class="error-message">
+    <span>{{ error }}</span>
+    <div class="error-actions">
+      <button class="action-button" (click)="tryFixWithAI()">Fix with AI</button>
+      <button class="close-button" (click)="dismissError()">&times;</button>
+    </div>
+  </div>
 
-  <span class="spacer"></span>
+  <!-- Monaco editor container -->
+  <div #editorContainer class="monaco-editor-container"></div>
 
-  <!-- Actions -->
-  <button
-    mat-icon-button
-    matTooltip="Format (Shift + Alt + F)"
-    (click)="formatCode()"
-  >
-    <mat-icon>format_align_left</mat-icon>
-  </button>
+  <!-- NEW: Editor Controls section -->
+  <div class="editor-controls">
+      <button class="icon-button" (click)="formatCode()" title="Format code">
+        <span class="icon icon-format"></span>
+      </button>
+      <button class="icon-button" (click)="clearEditor()" title="Clear editor">
+        <span class="icon icon-clear"></span>
+      </button>
+      <button class="icon-button" (click)="copyToClipboard()" title="Copy to clipboard">
+        <span class="icon icon-copy"></span>
+      </button>
+      <button class="icon-button" (click)="toggleWordWrap()" title="Toggle word wrap">
+        <span class="icon" [ngClass]="isWordWrapEnabled ? 'icon-wrap' : 'icon-nowrap'"></span>
+      </button>
+      <!-- Spacer to push Update button -->
+      <span class="spacer"></span>
+      <button class="send-button" (click)="updateDiagram()">
+        <span class="icon icon-run"></span>
+        <span>Update</span>
+      </button>
+  </div>
 
-  <button
-    mat-icon-button
-    matTooltip="Clear"
-    (click)="clearEditor()"
-  >
-    <mat-icon>delete_sweep</mat-icon>
-  </button>
+  <!-- NEW: Example Loader section -->
+  <div class="example-loader">
+      <button class="example-button" (click)="loadExample('flowchart')">Flowchart</button>
+      <button class="example-button" (click)="loadExample('sequence')">Sequence</button>
+      <button class="example-button" (click)="loadExample('classDiagram')">Class</button>
+      <button class="example-button" (click)="loadExample('gantt')">Gantt</button>
+      <button class="example-button" (click)="loadExample('er')">ER</button>
+      <!-- Spacer? Or let Docs button float right -->
+  </div>
 
-  <button
-    mat-icon-button
-    matTooltip="Copy to clipboard"
-    (click)="copyToClipboard()"
-  >
-    <mat-icon>content_copy</mat-icon>
-  </button>
+  <!-- REMOVED old action-bar -->
 
-  <button
-    mat-icon-button
-    [matTooltip]="isWordWrapEnabled ? 'Disable word-wrap' : 'Enable word-wrap'"
-    (click)="toggleWordWrap()"
-  >
-    <mat-icon>{{ isWordWrapEnabled ? 'wrap_text' : 'notes' }}</mat-icon>
-  </button>
-
-  <!-- Sample diagrams menu -->
-  <button
-    mat-icon-button
-    [matMenuTriggerFor]="examplesMenu"
-    matTooltip="Load example"
-  >
-    <mat-icon>library_books</mat-icon>
-  </button>
-  <mat-menu #examplesMenu="matMenu">
-    <button mat-menu-item (click)="loadExample('flowchart')">Flowchart</button>
-    <button mat-menu-item (click)="loadExample('sequence')">Sequence</button>
-    <button mat-menu-item (click)="loadExample('classDiagram')">Class diagram</button>
-    <button mat-menu-item (click)="loadExample('gantt')">Gantt</button>
-    <button mat-menu-item (click)="loadExample('er')">ER diagram</button>
-  </mat-menu>
-
-  <!-- Docs -->
-  <button
-    mat-icon-button
-    matTooltip="Mermaid documentation"
-    (click)="openDocumentation()"
-  >
-    <mat-icon>help_outline</mat-icon>
-  </button>
+  <!-- Editor footer with status info -->
+  <div class="editor-footer">
+    <span>Line {{ cursorPosition.lineNumber }}, Column {{ cursorPosition.column }}</span>
+    <span>Mermaid v{{ mermaidVersion }}</span>
+  </div>
 </div>
-
-<!-- ──────────────── error banner ──────────────── -->
-<div
-  *ngIf="error"
-  class="editor-error mat-elevation-z3"
-  role="alert"
-  aria-live="assertive"
->
-  <span>{{ error }}</span>
-
-  <span class="banner-spacer"></span>
-
-  <button
-    mat-stroked-button
-    color="primary"
-    (click)="tryFixWithAI()"
-    matTooltip="Attempt to fix with AI 🤖"
-  >
-    Fix
-  </button>
-
-  <button
-    mat-icon-button
-    (click)="dismissError()"
-    aria-label="Dismiss error"
-  >
-    <mat-icon>close</mat-icon>
-  </button>
-</div>
-
-<!-- ──────────────── Monaco host ──────────────── -->
-<div #editorContainer class="editor-container"></div>
-
-<!-- ──────────────── footer ──────────────── -->
-<footer class="editor-footer mat-elevation-z2">
-  Line&nbsp;{{ cursorPosition.lineNumber }} · Col&nbsp;{{ cursorPosition.column }}
-  <span class="spacer"></span>
-  <small>Mermaid v{{ mermaidVersion }}</small>
-</footer>

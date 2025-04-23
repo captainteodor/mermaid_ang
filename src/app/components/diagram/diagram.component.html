@@ -1,34 +1,42 @@
-<!-- Updated diagram.component.html -->
 <div class="diagram-container" [ngClass]="{'grid-bg': showGrid, 'dark-mode': darkMode}">
+  <!-- Custom toolbar without Material components -->
   <div class="diagram-toolbar">
-    <button mat-icon-button (click)="resetView()" matTooltip="Reset view">
-      <mat-icon>center_focus_strong</mat-icon>
+    <button class="icon-button" (click)="resetView()" title="Reset view">
+      <span class="icon icon-reset"></span>
     </button>
 
-    <button mat-icon-button (click)="zoomIn()" matTooltip="Zoom in">
-      <mat-icon>zoom_in</mat-icon>
+    <button class="icon-button" (click)="zoomIn()" title="Zoom in">
+      <span class="icon icon-zoom-in"></span>
     </button>
 
-    <button mat-icon-button (click)="zoomOut()" matTooltip="Zoom out">
-      <mat-icon>zoom_out</mat-icon>
+    <button class="icon-button" (click)="zoomOut()" title="Zoom out">
+      <span class="icon icon-zoom-out"></span>
     </button>
 
-    <mat-divider [vertical]="true"></mat-divider>
+    <div class="divider"></div>
 
-    <button mat-icon-button (click)="toggleGrid()" [matTooltip]="showGrid ? 'Hide grid' : 'Show grid'">
-      <mat-icon>grid_4x4</mat-icon>
+    <button class="icon-button" (click)="toggleGrid()" [title]="showGrid ? 'Hide grid' : 'Show grid'">
+      <span class="icon icon-grid"></span>
     </button>
 
-    <button mat-icon-button (click)="toggleDarkMode()" [matTooltip]="darkMode ? 'Light mode' : 'Dark mode'">
-      <mat-icon>{{ darkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    <button class="icon-button" (click)="toggleDarkMode()" [title]="darkMode ? 'Light mode' : 'Dark mode'">
+      <span class="icon" [ngClass]="darkMode ? 'icon-light' : 'icon-dark'"></span>
     </button>
   </div>
 
+  <!-- Error message if present -->
+  <div *ngIf="error" class="error-message">
+    <span>{{ error }}</span>
+    <button class="close-button" (click)="dismissError()">&times;</button>
+  </div>
+
+  <!-- Diagram content -->
   <div #diagramContainer class="diagram-content" [class.error]="error">
     <!-- Mermaid diagram will be rendered here -->
   </div>
 
+  <!-- Custom loader without Material spinner -->
   <div *ngIf="loading" class="loading-overlay">
-    <mat-spinner diameter="40"></mat-spinner>
+    <div class="loader"></div>
   </div>
 </div>

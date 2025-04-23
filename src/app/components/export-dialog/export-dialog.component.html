@@ -1,89 +1,135 @@
-<h2 mat-dialog-title>Export Diagram</h2>
+<div class="export-dialog">
+  <div class="dialog-header">
+    <h2>Export Diagram</h2>
+    <button class="icon-button close-button" (click)="close()">
+      <span class="icon icon-close"></span>
+    </button>
+  </div>
 
-<mat-dialog-content>
-  <mat-tab-group>
+  <div class="dialog-content">
+    <!-- Custom tabs -->
+    <div class="tabs">
+      <button [class.active]="activeTab === 'png'" (click)="setActiveTab('png')">PNG</button>
+      <button [class.active]="activeTab === 'svg'" (click)="setActiveTab('svg')">SVG</button>
+      <button [class.active]="activeTab === 'url'" (click)="setActiveTab('url')">URL</button>
+    </div>
+
     <!-- PNG Export Tab -->
-    <mat-tab label="PNG">
-      <div class="tab-content">
-        <p>Export your diagram as a PNG image.</p>
+    <div class="tab-content" *ngIf="activeTab === 'png'">
+      <p class="tab-description">Export your diagram as a PNG image.</p>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>File Name</mat-label>
-          <input matInput [(ngModel)]="pngSettings().fileName">
-        </mat-form-field>
+      <div class="form-group">
+        <label for="png-filename">File Name</label>
+        <input
+          type="text"
+          id="png-filename"
+          class="form-control"
+          [(ngModel)]="pngSettings().fileName">
+      </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Width (px)</mat-label>
-          <input matInput type="number" [(ngModel)]="pngSettings().width" min="100" max="5000">
-          <mat-hint>The height will be calculated automatically</mat-hint>
-        </mat-form-field>
+      <div class="form-group">
+        <label for="png-width">Width (px)</label>
+        <input
+          type="number"
+          id="png-width"
+          class="form-control"
+          [(ngModel)]="pngSettings().width"
+          min="100"
+          max="5000">
+        <small class="form-hint">The height will be calculated automatically</small>
+      </div>
 
-        <div class="field-row">
-          <label>Scale Quality:</label>
-          <mat-slider
+      <div class="form-group">
+        <label>Scale Quality:</label>
+        <div class="range-slider-container">
+          <input
+            type="range"
+            class="range-slider"
             min="1"
             max="4"
             step="0.5"
-            [displayWith]="formatScale"
-            class="full-width">
-            <input matSliderThumb [(ngModel)]="pngSettings().scale">
-          </mat-slider>
+            [(ngModel)]="pngSettings().scale">
+          <span class="range-value">{{ formatScale(pngSettings().scale) }}</span>
         </div>
-
-        <mat-checkbox [(ngModel)]="pngSettings().transparentBackground">
-          Transparent Background
-        </mat-checkbox>
-
-        <button mat-raised-button color="primary" (click)="exportAsPng()" class="export-button">
-          <mat-icon>download</mat-icon>
-          Export PNG
-        </button>
       </div>
-    </mat-tab>
+
+      <div class="form-group checkbox-group">
+        <label class="checkbox-container">
+          <input
+            type="checkbox"
+            [(ngModel)]="pngSettings().transparentBackground">
+          <span class="checkmark"></span>
+          Transparent Background
+        </label>
+      </div>
+
+      <button class="button-primary export-button" (click)="exportAsPng()">
+        <span class="icon icon-download"></span>
+        Export PNG
+      </button>
+    </div>
 
     <!-- SVG Export Tab -->
-    <mat-tab label="SVG">
-      <div class="tab-content">
-        <p>Export your diagram as an SVG vector image.</p>
+    <div class="tab-content" *ngIf="activeTab === 'svg'">
+      <p class="tab-description">Export your diagram as an SVG vector image.</p>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>File Name</mat-label>
-          <input matInput [(ngModel)]="svgSettings().fileName">
-        </mat-form-field>
-
-        <mat-checkbox [(ngModel)]="svgSettings().includeFonts">
-          Include Fonts (for better compatibility)
-        </mat-checkbox>
-
-        <button mat-raised-button color="primary" (click)="exportAsSvg()" class="export-button">
-          <mat-icon>download</mat-icon>
-          Export SVG
-        </button>
+      <div class="form-group">
+        <label for="svg-filename">File Name</label>
+        <input
+          type="text"
+          id="svg-filename"
+          class="form-control"
+          [(ngModel)]="svgSettings().fileName">
       </div>
-    </mat-tab>
+
+      <div class="form-group checkbox-group">
+        <label class="checkbox-container">
+          <input
+            type="checkbox"
+            [(ngModel)]="svgSettings().includeFonts">
+          <span class="checkmark"></span>
+          Include Fonts (for better compatibility)
+        </label>
+      </div>
+
+      <button class="button-primary export-button" (click)="exportAsSvg()">
+        <span class="icon icon-download"></span>
+        Export SVG
+      </button>
+    </div>
 
     <!-- URL Export Tab -->
-    <mat-tab label="URL">
-      <div class="tab-content">
-        <p>Generate a shareable URL for your diagram.</p>
+    <div class="tab-content" *ngIf="activeTab === 'url'">
+      <p class="tab-description">Generate a shareable URL for your diagram.</p>
 
-        <mat-checkbox [(ngModel)]="urlSettings().includeState">
+      <div class="form-group checkbox-group">
+        <label class="checkbox-container">
+          <input
+            type="checkbox"
+            [(ngModel)]="urlSettings().includeState">
+          <span class="checkmark"></span>
           Include Editor State
-        </mat-checkbox>
-
-        <mat-checkbox [(ngModel)]="urlSettings().includeTheme">
-          Include Theme Settings
-        </mat-checkbox>
-
-        <button mat-raised-button color="primary" (click)="shareUrl()" class="export-button">
-          <mat-icon>content_copy</mat-icon>
-          Copy Shareable URL
-        </button>
+        </label>
       </div>
-    </mat-tab>
-  </mat-tab-group>
-</mat-dialog-content>
 
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-</mat-dialog-actions>
+      <div class="form-group checkbox-group">
+        <label class="checkbox-container">
+          <input
+            type="checkbox"
+            [(ngModel)]="urlSettings().includeTheme">
+          <span class="checkmark"></span>
+          Include Theme Settings
+        </label>
+      </div>
+
+      <button class="button-primary export-button" (click)="shareUrl()">
+        <span class="icon icon-copy"></span>
+        Copy Shareable URL
+      </button>
+    </div>
+  </div>
+
+  <div class="dialog-footer">
+    <button class="button-secondary" (click)="close()">Cancel</button>
+  </div>
+</div>

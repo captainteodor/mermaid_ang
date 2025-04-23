@@ -1,8 +1,7 @@
-<!-- Fixed toolbar.component.html -->
-<mat-toolbar color="primary" class="app-toolbar">
+<header class="app-toolbar">
   <div class="toolbar-left">
     <span class="logo">
-      <img src="assets/favicon.svg" alt="Mermaid Logo">
+      <img src="assets/favicon.svg" alt="Mermaid Logo" />
       <span class="title">Mermaid Live Editor</span>
     </span>
     <span class="version">v{{mermaidVersion}}</span>
@@ -11,37 +10,36 @@
   <div class="toolbar-center"></div>
 
   <div class="toolbar-right">
-    <button mat-icon-button matTooltip="Sample Diagrams" (click)="openSampleDiagrams()">
-      <mat-icon>category</mat-icon>
+    <button class="icon-button" title="Sample Diagrams" (click)="openSampleDiagrams()">
+      <span class="icon icon-category"></span>
     </button>
 
-    <button mat-icon-button matTooltip="Share Diagram" (click)="shareDiagram()">
-      <mat-icon>share</mat-icon>
+    <button class="icon-button" title="Share Diagram" (click)="shareDiagram()">
+      <span class="icon icon-share"></span>
     </button>
 
-    <!-- Export dropdown menu -->
-    <button mat-icon-button matTooltip="Export Diagram" [matMenuTriggerFor]="exportMenu">
-      <mat-icon>download</mat-icon>
-    </button>
-
-    <mat-menu #exportMenu="matMenu">
-      <button mat-menu-item (click)="exportDiagram('svg')">
-        <mat-icon>code</mat-icon>
-        <span>Export SVG</span>
+    <div class="dropdown-container">
+      <button class="icon-button" title="Export Diagram" (click)="toggleExportMenu()">
+        <span class="icon icon-download"></span>
       </button>
-      <button mat-menu-item (click)="exportDiagram('png')">
-        <mat-icon>image</mat-icon>
-        <span>Export PNG</span>
-      </button>
-    </mat-menu>
-
-    <button mat-icon-button matTooltip="Toggle Theme" (click)="toggleTheme()">
-      <mat-icon>{{isDarkTheme ? 'light_mode' : 'dark_mode'}}</mat-icon>
+      <div class="dropdown-menu" *ngIf="isExportMenuOpen">
+        <button class="dropdown-item" (click)="exportDiagram('svg')">
+          <span class="icon icon-code"></span>
+          <span>Export SVG</span>
+        </button>
+        <button class="dropdown-item" (click)="exportDiagram('png')">
+          <span class="icon icon-image"></span>
+          <span>Export PNG</span>
+        </button>
+      </div>
+    </div>
+    <button class="icon-button" title="Toggle Theme" (click)="toggleTheme()">
+       <span class="icon" [class.icon-light-mode]="isDarkTheme" [class.icon-dark-mode]="!isDarkTheme"></span>
     </button>
 
-    <button mat-flat-button color="accent" (click)="saveToAccount()">
-      <mat-icon>save</mat-icon>
+    <button class="send-button" (click)="saveToAccount()">
+      <span class="icon icon-save"></span>
       <span class="button-text">Save</span>
     </button>
   </div>
-</mat-toolbar>
+</header>

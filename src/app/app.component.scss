@@ -5,9 +5,27 @@
   min-height: 100vh;
 }
 
+/* Custom header styles */
+.app-header {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 16px;
+  background-color: var(--primary-bg);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.app-title {
+  font-size: 20px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+}
+
 /* main area below header */
 .main-shell {
   flex: 1 1 auto;
   display: flex;
-  overflow: hidden;   // prevent scroll bleed
+  overflow: hidden;
 }

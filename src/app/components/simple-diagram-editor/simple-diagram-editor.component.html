@@ -1,25 +1,24 @@
-<!-- Updated simple-diagram-editor.component.html -->
 <div class="editor-container">
   <div class="editor-header">
-    <a class="editor-title" routerLink="/">SimpleDiagramEditor</a>
+    <a class="editor-title" routerLink="/">Mermaid Editor</a>
 
     <div class="editor-tabs">
       <button
         [class.active]="editorMode === 'code'"
         (click)="onTabChange('code')">
-        <mat-icon>code</mat-icon>
+        <span class="icon icon-code"></span>
         Code
       </button>
       <button
         [class.active]="editorMode === 'config'"
         (click)="onTabChange('config')">
-        <mat-icon>settings</mat-icon>
+        <span class="icon icon-settings"></span>
         Config
       </button>
     </div>
 
-    <a href="https://mermaid.js.org/syntax/" target="_blank" class="docs-link">
-      <mat-icon>menu_book</mat-icon>
+    <a href="https://mermaid.js.org/syntax/" target="_blank" class="docs-link" title="Mermaid Documentation">
+      <span class="icon icon-book"></span>
       Documentation
     </a>
   </div>

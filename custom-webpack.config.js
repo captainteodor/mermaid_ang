@@ -1,10 +1,17 @@
-// custom-webpack.config.js
 const path = require('path');
 
 module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.ttf$/,
+        use: ['file-loader']
+      }
+    ]
+  },
   resolve: {
     alias: {
-      // This is the critical part - alias 'marked' to our adapter
+      // Redirect marked imports to our adapter
       'marked': path.resolve(__dirname, 'src/app/utils/marked-adapter.js')
     }
   }

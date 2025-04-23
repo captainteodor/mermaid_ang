@@ -1,18 +1,41 @@
+/* Updated editor-page.component.scss */
 .editor-page {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100vh; // Or 100% if inside another container
   overflow: hidden;
+  background-color: var(--secondary-bg); // Use background from body
+}
+
+/* Custom header styles based on Figma design */
+.page-header {
+  background-color: var(--primary-bg);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0; // Prevent header from shrinking
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 64px; // Or use a variable if defined
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1.2rem;
+  gap: 12px; // Or use a variable
+  font-size: 1.2rem; // Or use a variable
+  font-weight: 500; // Or use a variable
+  color: var(--text-primary);
 
   img {
-    height: 32px;
+    height: 32px; // Or use a variable
+  }
+
+  .logo-text {
+    font-family: inherit; // Inherit from body
   }
 }
 
@@ -20,93 +43,192 @@
   flex: 1 1 auto;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px; // Or use a variable
+
+  // Use global .icon-button styles as a base, override if necessary
+  .icon-button {
+    // Inherits base styles from global .icon-button if defined
+    // Specific overrides for header context if needed:
+    width: 40px;  // Matches global style
+    height: 40px; // Matches global style
+
+    .icon {
+       // Define size specifically for header icons if different from global
+       width: 20px;
+       height: 20px;
+       // color: var(--text-secondary); // Example override if needed
+    }
+  }
+
+  // Use global .send-button styles as a base conceptually
+  .action-button {
+    // Base styles (similar to .send-button in styles.scss)
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px; // Specific height for this button?
+    padding: 0 16px;
+    border-radius: var(--border-radius-md);
+    background-color: var(--action-primary);
+    color: var(--action-text);
+    font-family: inherit; // Inherit from body
+    font-weight: 500;
+    font-size: 14px; // Use variable if available
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      // Use a variable or calculated value for hover if possible
+      // Example: darken(--action-primary, 10%) or a specific hover variable
+      background-color: hsl(from var(--action-primary) h s calc(l - 5%)); // Darken slightly
+    }
+
+    .icon {
+      // Define size specifically for this button's icon
+      width: 16px;
+      height: 16px;
+      color: var(--action-text); // Ensure icon color matches text
+    }
+  }
+}
+
+
 .mobile-toggle {
   padding: 8px;
-  display: flex;
+  display: none; // Initially hidden, shown via TS/CSS media query if isMobile
   justify-content: center;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #e0e0e0;
+  background-color: var(--secondary-bg);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0; // Prevent toggle bar from shrinking
 
-  mat-button-toggle-group {
+  @media (max-width: 768px) { // Show only on mobile breakpoint
+    display: flex;
+  }
+
+  // Align with global .tabs styling
+  .toggle-container {
+    display: flex;
     width: 100%;
+    background-color: var(--tertiary-bg); // Use variable from .tabs
+    border-radius: var(--border-radius-md); // Use variable from .tabs
+    padding: 4px; // Use variable padding or match .tabs
 
-    mat-button-toggle {
+    button {
       flex: 1;
-      text-align: center;
+      border: none;
+      background: none;
+      padding: 8px 16px; // Match .tabs button padding or use variables
+      border-radius: var(--border-radius-sm); // Use variable from .tabs.active
+      font-family: inherit; // Inherit from body
+      font-weight: 500; // Match .tabs button
+      font-size: 14px; // Match .tabs button
+      color: var(--text-secondary); // Match .tabs button color
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+
+      &.active {
+        background-color: var(--primary-bg); // Match .tabs active background
+        color: var(--text-primary); // Match .tabs active color
+        box-shadow: var(--shadow-sm); // Match .tabs active shadow
+      }
+
+       &:hover:not(.active) {
+         // background-color: rgba(0, 0, 0, 0.03); // Match .tabs hover
+         background-color: hsl(from var(--tertiary-bg) h s calc(l - 5%)); // Example subtle darken
+      }
     }
   }
 }
 
 .content-container {
   display: flex;
-  flex: 1;
-  overflow: hidden;
+  flex: 1; // Grow to fill remaining space
+  overflow: hidden; // Prevent content overflow
 
+  // Mobile layout handled by classes added via [ngClass]
   &.mobile {
-    flex-direction: column;
-
+    // Styles applied when 'mobile' class is present
     &.view-editor {
-      .editor-panel {
-        flex: 1;
-        display: block;
-      }
-
-      .diagram-panel {
-        display: none;
-      }
+      .editor-panel { display: flex; flex: 1; } // Show editor, let it grow
+      .diagram-panel { display: none; } // Hide diagram
+      .history-panel { display: none; } // Hide history
     }
-
     &.view-diagram {
-      .editor-panel {
-        display: none;
-      }
-
-      .diagram-panel {
-        flex: 1;
-        display: block;
-      }
+      .editor-panel { display: none; } // Hide editor
+      .diagram-panel { display: flex; flex: 1; } // Show diagram, let it grow
+      .history-panel { display: none; } // Hide history
     }
   }
 
+  // Desktop layout
   &:not(.mobile) {
     .editor-panel, .diagram-panel {
-      flex: 1;
+      flex: 1; // Share space equally by default
       height: 100%;
-      transition: width 0.3s ease;
+      min-width: 0; // Allow panels to shrink
     }
-  }
-
-  &.with-history:not(.mobile) {
-    .editor-panel, .diagram-panel {
-      flex: 1;
-    }
-
     .history-panel {
-      flex: 0 0 25%; // Fixed width
-      max-width: 350px;
+       display: none; // Hide history panel by default
+    }
+  }
+
+  // Desktop layout with history panel open
+  &.with-history:not(.mobile) {
+    .editor-panel {
+       flex: 1 1 40%; // Example: Editor takes less space
+       min-width: 300px; // Ensure editor doesn't get too small
+    }
+    .diagram-panel {
+       flex: 1 1 60%; // Example: Diagram takes more space
+       min-width: 300px;
+    }
+    .history-panel {
+      display: flex; // Show history panel
+      flex: 0 0 250px; // Fixed width for history panel
+      max-width: 300px; // Max width constraint
+      border-left: 1px solid var(--border-color);
+      overflow-y: auto;
+      background-color: var(--secondary-bg);
     }
   }
 }
 
-.editor-panel, .diagram-panel {
-  display: flex;
+// Panel base styles
+.editor-panel, .diagram-panel, .history-panel {
+  display: flex; // Default display state (can be overridden by mobile/history logic)
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; // Contained elements should handle their own scroll
 }
 
-.history-panel {
-  border-left: 1px solid #e0e0e0;
-  overflow-y: auto;
-  background-color: #fafafa;
-}
 
-// Placeholder for history panel
-.placeholder-content {
+// Placeholder for history panel content
+.history-panel .placeholder-content {
   padding: 16px;
-  color: #757575;
+  color: var(--text-secondary);
   text-align: center;
+  margin: auto; // Center placeholder vertically and horizontally
 
   h3 {
     margin-top: 0;
+    font-family: inherit;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 8px;
   }
 }
+
+
+/*
+ * REMOVED LOCAL ICON DEFINITIONS - Add these to styles.scss
+ * Ensure the SVGs match your design system's icons.
+ */
+/*
+.icon-history { ... }
+.icon-share { ... }  // Note: This SVG is different from the one in global styles.scss
+.icon-download { ... }
+.icon-save { ... }
+*/

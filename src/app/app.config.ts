@@ -14,16 +14,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-
     provideRouter(routes),
-
-
     provideAnimations(),
-
-
-
-
-
     provideHttpClient(),
     // Import providers from modules if needed
     importProvidersFrom(
@@ -32,8 +24,6 @@ export const appConfig: ApplicationConfig = {
         registrationStrategy: 'registerWhenStable:30000'
       })
     ),
-
-
     // Services
     DiagramStateService,
     UtilsService,
