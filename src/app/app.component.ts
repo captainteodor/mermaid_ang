@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +8,8 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
   styleUrls: ['./app.component.scss'],
   standalone: true,
   imports: [
-    WorkspaceComponent
+    WorkspaceComponent,
+    ToolbarComponent
   ]
 })
 export class AppComponent {
