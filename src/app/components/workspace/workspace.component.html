@@ -1,6 +1,7 @@
 <div class="workspace-container" #workspaceContainer>
   <div class="desktop-workspace">
-    <div class="editor-panel" [style.width.%]="splitRatio">
+    <!-- Remove direct width bindings, we'll use CSS variables instead -->
+    <div class="editor-panel">
       <div class="editor-tabs">
         <button
           [class.active]="selectedTab === 'code'"
@@ -23,7 +24,7 @@
 
     <div class="resizer" (mousedown)="startDrag($event)"></div>
 
-    <div class="diagram-panel" [style.width.%]="100 - splitRatio">
+    <div class="diagram-panel">
       <app-diagram></app-diagram>
     </div>
   </div>

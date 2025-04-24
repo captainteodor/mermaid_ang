@@ -1,23 +1,15 @@
-/* Updated toolbar.component.scss */
-@use '../../styles/variables' as vars; // Example: If you extract variables
-
 .app-toolbar {
   display: flex;
   justify-content: space-between;
-  align-items: center; // Ensure vertical alignment
-  padding: 0 16px;
-  // Use variables from styles.scss
-  background-color: var(--primary-bg); // Or another appropriate variable
-  box-shadow: var(--shadow-sm);
-  height: 64px; // Keep if specified, or use variable
-  z-index: 100; // Keep if needed for stacking
-  border-bottom: 1px solid var(--border-color); // Match styles.scss example
+  align-items: center;
+  width: 100%;
+  background-color: var(--primary-bg);
 }
 
-.toolbar-left, .toolbar-center, .toolbar-right {
+.toolbar-left, .toolbar-right {
   display: flex;
   align-items: center;
-  gap: 8px; // Keep gap or use variable
+  gap: 8px;
 }
 
 .toolbar-left {
@@ -27,43 +19,72 @@
     gap: 8px;
 
     img {
-      height: 32px; // Keep size or use variable
+      height: 32px;
+      width: 32px;
     }
 
     .title {
-      font-size: 18px; // Keep size or use variable
-      font-weight: 500; // Keep weight or use variable
-      letter-spacing: 0.5px; // Keep spacing or use variable
-      color: var(--text-primary); // Use variable
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
     }
   }
 
   .version {
-    font-size: 12px; // Keep size or use variable
-    color: var(--text-secondary); // Use variable
-    opacity: 1; // Remove opacity if text-secondary is sufficient
+    font-size: 12px;
+    color: var(--text-secondary);
     margin-left: 8px;
   }
 }
 
 .toolbar-right {
   .icon-button {
-    // Styles are likely inherited from .icon-button in styles.scss
-    // Add specific overrides if needed
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--tertiary-bg);
+    }
+
     .icon {
-       width: 20px; // Override if needed from styles.scss
-       height: 20px; // Override if needed from styles.scss
+      width: 20px;
+      height: 20px;
+      color: var(--text-secondary);
     }
   }
 
   .send-button {
-    // Styles are likely inherited from .send-button in styles.scss
-    // Ensure it matches the desired appearance (e.g., background: var(--action-primary))
-    padding: 0 16px; // Keep padding or use variable
-    height: 36px; // Keep height or use variable
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 16px;
+    background-color: var(--action-primary);
+    color: var(--action-text);
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #1a2b4b;
+    }
+
+    .icon {
+      width: 16px;
+      height: 16px;
+    }
   }
 
-  // Basic Dropdown Styles (Refine these)
   .dropdown-container {
     position: relative;
   }
@@ -77,8 +98,9 @@
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-md);
     padding: 4px 0;
-    z-index: 110; // Above toolbar
+    z-index: 110;
     min-width: 150px;
+    margin-top: 4px;
   }
 
   .dropdown-item {
@@ -100,26 +122,49 @@
     .icon {
       width: 16px;
       height: 16px;
-      color: var(--text-secondary); // Or adjust as needed
+      color: var(--text-secondary);
     }
   }
 }
 
+/* Add missing icon-category, icon-image */
+.icon-category {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>');
+}
 
-/* Responsive adjustments - Keep or modify as needed */
-@media (max-width: 600px) {
-  .toolbar-left .logo .title {
-    display: none;
+.icon-image {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>');
+}
+
+/* Responsive styles for mobile */
+@media (max-width: 768px) {
+  .app-toolbar {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 8px;
   }
 
-  .toolbar-left .version {
-    display: none;
+  .toolbar-left {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 8px;
+
+    .logo .title {
+      display: none;
+    }
+
+    .version {
+      display: none;
+    }
   }
 
-  .toolbar-right .send-button .button-text {
-    display: none;
-  }
-   .toolbar-right .send-button .icon { // Ensure icon is visible
-    margin-right: 0;
+  .toolbar-right {
+    width: 100%;
+    justify-content: center;
+
+    .button-text {
+      display: none;
+    }
   }
 }

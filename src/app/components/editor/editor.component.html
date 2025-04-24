@@ -9,10 +9,10 @@
     </div>
   </div>
 
-  <!-- Monaco editor container -->
+  <!-- Monaco editor container - will use browser's native resize handle -->
   <div #editorContainer class="monaco-editor-container"></div>
 
-  <!-- NEW: Editor Controls section -->
+  <!-- Editor Controls section -->
   <div class="editor-controls">
       <button class="icon-button" (click)="formatCode()" title="Format code">
         <span class="icon icon-format"></span>
@@ -34,17 +34,14 @@
       </button>
   </div>
 
-  <!-- NEW: Example Loader section -->
+  <!-- Example Loader section -->
   <div class="example-loader">
       <button class="example-button" (click)="loadExample('flowchart')">Flowchart</button>
       <button class="example-button" (click)="loadExample('sequence')">Sequence</button>
       <button class="example-button" (click)="loadExample('classDiagram')">Class</button>
       <button class="example-button" (click)="loadExample('gantt')">Gantt</button>
       <button class="example-button" (click)="loadExample('er')">ER</button>
-      <!-- Spacer? Or let Docs button float right -->
   </div>
-
-  <!-- REMOVED old action-bar -->
 
   <!-- Editor footer with status info -->
   <div class="editor-footer">

@@ -1,10 +1,12 @@
-<header class="app-header">
-  <div class="app-title">Mermaid Editor</div>
-</header>
+<div class="app-container">
+  <!-- App header with toolbar -->
+  <header class="app-header">
+    <div class="app-title">CodeIQ Diagram Editor</div>
+    <app-toolbar (themeToggled)="onThemeToggled($event)"></app-toolbar>
+  </header>
 
-
-
-<div class="main-shell">
-  <app-workspace></app-workspace>
+  <!-- Main content area -->
+  <div class="main-shell">
+    <app-workspace></app-workspace>
+  </div>
 </div>
-<app-toolbar></app-toolbar>

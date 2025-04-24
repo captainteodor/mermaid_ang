@@ -75,7 +75,14 @@ export class EditorComponent
   }
 
   ngAfterViewInit(): void {
-    if (this.isBrowser) this.bootstrapMonaco();
+    if (this.isBrowser) {
+      this.bootstrapMonaco();
+
+      // Ensure the browser knows the element is resizable
+      if (this.editorContainer?.nativeElement) {
+        console.log('Editor container initialized with resize: vertical');
+      }
+    }
   }
 
   ngOnDestroy(): void {
@@ -241,8 +248,21 @@ export class EditorComponent
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
         wordWrap: 'on',
+        lineNumbers: 'on',
+        fontSize: 14,
+        fontFamily: "'Menlo', 'Monaco', 'Courier New', monospace",
+        lineHeight: 20,
       }
     );
+
+    /* Listen for resize events to ensure Monaco editor updates its layout */
+    if (typeof ResizeObserver !== 'undefined') {
+      const resizeObserver = new ResizeObserver(() => {
+        console.log('Container resized, updating editor layout');
+        this.editor.layout();
+      });
+      resizeObserver.observe(this.editorContainer.nativeElement);
+    }
 
     /* update caret position */
     this.editor.onDidChangeCursorPosition((e) => {

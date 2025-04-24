@@ -1,36 +1,89 @@
-// Minimal component-specific styles, leveraging global design system
+// Editor component styles with native browser resizing
 .editor-container {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  overflow: visible; // Allow content to expand
 }
 
 .monaco-editor-container {
   flex: 1;
-  min-height: 200px;
+  min-height: 400px; // Increased default height
+  max-height: 800px; // Optional: limit max height
   border: 1px solid var(--border-color, #E1E8F1);
-  border-radius: var(--border-radius-lg, 8px);
+  border-radius: var(--border-radius-lg, 8px) var(--border-radius-lg, 8px) 0 0; // Rounded only at top
   overflow: hidden;
+
+  // Native browser resize handle - IMPORTANT: this is the key change
+  resize: vertical;
+
+  // Make it obvious that it's resizable by adding a visual indicator
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M8 6L4 0h8L8 6z' fill='%23ccc'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: bottom;
+    pointer-events: none; // Allow clicks to pass through
+  }
 }
 
-// Removed the large commented-out block for dropdown styles
-// REMOVED .action-bar and .button-group styles
+// Error message display
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--error-bg, #FEF2F2);
+  border: 1px solid var(--error-border, #FCA5A5);
+  color: var(--error-text, #B91C1C);
+  border-radius: var(--border-radius-md, 6px);
+  margin-bottom: 8px;
 
-// NEW Styles for Editor Controls Bar
+  .error-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .action-button {
+    padding: 4px 8px;
+    background-color: var(--error-bg);
+    border: 1px solid var(--error-border);
+    border-radius: var(--border-radius-sm, 4px);
+    color: var(--error-text);
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--error-text);
+    cursor: pointer;
+  }
+}
+
+// Editor Controls section
 .editor-controls {
   display: flex;
   align-items: center;
-  padding: 8px 12px; // Padding for the bar
-  background-color: var(--secondary-bg, #ffffff); // Or transparent?
-  border-top: 1px solid var(--border-color, #E1E8F1);
-  gap: 8px; // Gap between icon buttons
+  padding: 8px 12px;
+  background-color: var(--secondary-bg, #ffffff);
+  border: 1px solid var(--border-color, #E1E8F1);
+  border-top: none; // Connected to the editor
+  border-radius: 0 0 var(--border-radius-lg, 8px) var(--border-radius-lg, 8px); // Rounded only at bottom
+  gap: 8px;
 
   .spacer {
-    flex-grow: 1; // This pushes the Update button to the right
+    flex-grow: 1;
   }
 
-  // Apply icon button styles directly within this container
   .icon-button {
     flex: initial;
     border: none;
@@ -42,7 +95,7 @@
     height: 32px;
     border-radius: var(--border-radius-sm, 4px);
 
-    .icon { /* Styles for icons inside buttons */
+    .icon {
        width: 16px;
        height: 16px;
        color: var(--text-secondary, #60758D);
@@ -54,7 +107,6 @@
     }
   }
 
-  // Apply send button styles directly within this container
   .send-button {
       padding: 6px 12px;
       background-color: var(--action-primary, #1e293b);
@@ -68,12 +120,11 @@
       align-items: center;
       gap: 6px;
       transition: background-color 0.15s ease;
-      // margin-left: auto; // No longer needed here, spacer handles it
 
       .icon {
          width: 16px;
          height: 16px;
-         background-color: transparent !important; // Keep this to avoid other icon styles interfering
+         background-color: transparent !important;
       }
 
       &:hover {
@@ -82,17 +133,17 @@
   }
 }
 
-// NEW Styles for Example Loader Bar/Card
+// Example Loader section
 .example-loader {
   display: flex;
-  flex-wrap: wrap; // Allow wrapping
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  padding: 12px; // Padding for the card
-  background-color: var(--secondary-bg, #ffffff); // Background for the card
-  border-top: 1px solid var(--border-color, #E1E8F1);
-  margin-top: 8px; // Space from editor controls
-  border-radius: var(--border-radius-lg, 8px); // Optional: round corners
+  padding: 12px;
+  background-color: var(--secondary-bg, #ffffff);
+  border: 1px solid var(--border-color, #E1E8F1);
+  border-radius: var(--border-radius-lg, 8px);
+  margin-top: 12px;
 
   .example-button {
       flex: initial;
@@ -117,7 +168,6 @@
       }
   }
 
-  // Styles for the docs icon button within this specific bar
   .icon-button {
       flex: initial;
       border: none;
@@ -128,7 +178,7 @@
       width: 32px;
       height: 32px;
       border-radius: var(--border-radius-sm, 4px);
-      margin-left: auto; // Push docs button to the right within this bar
+      margin-left: auto;
 
       .icon {
           width: 16px;
@@ -149,38 +199,34 @@
   align-items: center;
   justify-content: space-between;
   background-color: var(--tertiary-bg, #F0F5F9);
-  border-top: 1px solid var(--border-color, #E1E8F1); // Add a border top
+  border: 1px solid var(--border-color, #E1E8F1);
+  border-radius: var(--border-radius-lg, 8px);
+  margin-top: 12px;
 
-  span { // Style for text in footer
+  span {
     font-size: 12px;
     color: var(--text-secondary, #60758D);
   }
 }
 
-// Ensure proper spacing in error state
-.error-message {
-  margin-bottom: 0;
-}
-
 // Responsive adjustments
 @media screen and (max-width: 768px) {
-  // Adjustments for the new structure might be needed
   .editor-controls {
-    flex-wrap: wrap; // Allow wrapping
+    flex-wrap: wrap;
 
     .send-button {
-      width: 100%; // Make update full width
-      order: 1; // Move update button down
-      margin-top: 8px; // Add space when wrapped
+      width: 100%;
+      order: 1;
+      margin-top: 8px;
     }
     .spacer {
-      display: none; // Hide spacer on mobile
+      display: none;
     }
   }
 
   .example-loader {
     .icon-button {
-       margin-left: 0; // Don't push docs button on mobile? Or maybe keep it?
+       margin-left: 0;
     }
   }
 }

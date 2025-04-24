@@ -1,10 +1,8 @@
-import { Component, ElementRef, ViewChild, OnInit, OnDestroy, inject, PLATFORM_ID, Inject, HostListener, Renderer2, AfterViewInit } from '@angular/core'; // Added Renderer2, AfterViewInit
+import { Component, ElementRef, ViewChild, OnInit, OnDestroy, inject, PLATFORM_ID, Inject, HostListener, Renderer2, AfterViewInit, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { DiagramStateService } from '../../services/diagram-state.service';
 import { DiagramComponent } from '../diagram/diagram.component';
-// REMOVE MatIconModule import
-// import { MatIconModule } from '@angular/material/icon';
 import { EditorComponent } from '../editor/editor.component';
 
 @Component({
@@ -14,29 +12,27 @@ import { EditorComponent } from '../editor/editor.component';
   standalone: true,
   imports: [
     CommonModule,
-    // REMOVE MatIconModule from imports
     EditorComponent,
     DiagramComponent
   ]
 })
-export class WorkspaceComponent implements OnInit, OnDestroy, AfterViewInit { // Implemented AfterViewInit
+export class WorkspaceComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('workspaceContainer') workspaceContainer!: ElementRef<HTMLDivElement>;
 
   private diagramState = inject(DiagramStateService);
-  private renderer = inject(Renderer2); // Inject Renderer2
+  private renderer = inject(Renderer2);
+  private ngZone = inject(NgZone); // Add NgZone for performance
   private subscription = new Subscription();
   private isBrowser: boolean;
 
-
   isMobile = false;
-  splitRatio = 40; // Default Percentage for the editor width (updated from 50)
+  splitRatio = 40; // Default Percentage for the editor width
   isDragging = false;
   selectedTab = 'code';
 
   // References to panels for mobile visibility toggle
   private editorPanelElement: HTMLElement | null = null;
   private diagramPanelElement: HTMLElement | null = null;
-
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -59,30 +55,32 @@ export class WorkspaceComponent implements OnInit, OnDestroy, AfterViewInit { //
            }
         })
       );
-      // Set initial editor basis
-      this.setEditorBasis(this.splitRatio);
+
+      // Initialize the editor width
+      this.updatePanelSizes();
+
+      // Debug message
+      console.log('Workspace initialized with splitRatio:', this.splitRatio);
     }
   }
 
-   ngAfterViewInit() {
+  ngAfterViewInit() {
     if (this.isBrowser) {
       // Get panel elements after view is initialized
       this.editorPanelElement = this.workspaceContainer.nativeElement.querySelector('.editor-panel');
       this.diagramPanelElement = this.workspaceContainer.nativeElement.querySelector('.diagram-panel');
 
+      // Apply initial sizes
+      this.updatePanelSizes();
+
       // Set initial visibility for mobile
       this.updateMobileVisibility();
 
-      // Fix layout after a short delay to ensure rendering
-      // The fixPanelLayout logic seems overly complex and might conflict
-      // with flexbox. Consider simplifying or removing if flex handles it.
-      // setTimeout(() => this.fixPanelLayout(), 0);
-
-      // Add resize listener using Renderer2 for better cleanup potential
-      // window.addEventListener('resize', this.onWindowResize);
+      // Debug message
+      console.log('Workspace AfterViewInit completed, panels found:',
+                  !!this.editorPanelElement, !!this.diagramPanelElement);
     }
   }
-
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -90,22 +88,14 @@ export class WorkspaceComponent implements OnInit, OnDestroy, AfterViewInit { //
         // Clean up listeners
         document.removeEventListener('mousemove', this.onDrag);
         document.removeEventListener('mouseup', this.stopDrag);
-        // window.removeEventListener('resize', this.onWindowResize);
     }
   }
-
- // Bound arrow function for listener cleanup
-  // private onWindowResize = (): void => {
-  //    this.checkScreenSize();
-  //    // this.fixPanelLayout(); // Re-evaluate if fixPanelLayout is needed
-  // };
 
   @HostListener('window:resize', ['$event'])
   onResize() {
     if (this.isBrowser) {
       this.checkScreenSize();
-       // Re-apply editor basis on resize if needed, flexbox might handle it
-       this.setEditorBasis(this.splitRatio);
+      this.updatePanelSizes();
     }
   }
 
@@ -146,11 +136,17 @@ export class WorkspaceComponent implements OnInit, OnDestroy, AfterViewInit { //
 
     event.preventDefault();
     this.isDragging = true;
-    // Use bound functions for listeners
-    document.addEventListener('mousemove', this.onDrag);
-    document.addEventListener('mouseup', this.stopDrag);
+
+    // Run event listeners outside Angular zone for better performance
+    this.ngZone.runOutsideAngular(() => {
+      document.addEventListener('mousemove', this.onDrag);
+      document.addEventListener('mouseup', this.stopDrag);
+    });
+
     this.renderer.setStyle(document.body, 'cursor', 'col-resize');
     this.renderer.setStyle(document.body, 'user-select', 'none'); // Prevent text selection
+
+    console.log('Drag started'); // Debug message
   }
 
   // Use arrow function to preserve 'this' context for listener
@@ -165,7 +161,11 @@ export class WorkspaceComponent implements OnInit, OnDestroy, AfterViewInit { //
 
     // Constrain ratio
     this.splitRatio = Math.max(20, Math.min(80, newRatio));
-    this.setEditorBasis(this.splitRatio);
+
+    // Update panel sizes directly
+    this.updatePanelSizes();
+
+    console.log('Dragging, new ratio:', this.splitRatio); // Debug message
   }
 
   // Use arrow function to preserve 'this' context for listener
@@ -173,22 +173,38 @@ export class WorkspaceComponent implements OnInit, OnDestroy, AfterViewInit { //
     if (!this.isBrowser || !this.isDragging) return;
 
     this.isDragging = false;
+
+    // Clean up event listeners
     document.removeEventListener('mousemove', this.onDrag);
     document.removeEventListener('mouseup', this.stopDrag);
+
     this.renderer.removeStyle(document.body, 'cursor');
     this.renderer.removeStyle(document.body, 'user-select');
+
+    // Return to Angular zone for change detection
+    this.ngZone.run(() => {
+      console.log('Drag ended, final ratio:', this.splitRatio); // Debug message
+    });
   }
 
-  private setEditorBasis(ratio: number): void {
-     // Use Renderer2 to set style - safer for SSR potentially, though logic is browser-only
-     this.renderer.setStyle(this.workspaceContainer.nativeElement, '--editor-basis', `${ratio}%`);
-     // Alternatively, directly set:
-     // document.documentElement.style.setProperty('--editor-basis', `${ratio}%`);
-  }
+  // Direct update of panel sizes using inline styles
+  private updatePanelSizes(): void {
+    if (!this.editorPanelElement || !this.diagramPanelElement) {
+      console.log('Panels not available for resize'); // Debug message
+      return;
+    }
 
+    // Set width directly using inline styles
+    this.renderer.setStyle(this.editorPanelElement, 'width', `${this.splitRatio}%`);
+    this.renderer.setStyle(this.diagramPanelElement, 'width', `${100 - this.splitRatio}%`);
+
+    // Also update the CSS variable for consistency (used in some styles)
+    this.renderer.setStyle(this.workspaceContainer.nativeElement, '--editor-basis', `${this.splitRatio}%`);
+
+    console.log('Panel sizes updated:', this.splitRatio, 100 - this.splitRatio); // Debug message
+  }
 
   // --- Mobile Panel Visibility ---
-
   private updateMobileVisibility(): void {
      if (!this.isBrowser || !this.isMobile || !this.editorPanelElement || !this.diagramPanelElement) {
         // If not mobile, ensure classes are removed
@@ -206,8 +222,4 @@ export class WorkspaceComponent implements OnInit, OnDestroy, AfterViewInit { //
         this.renderer.addClass(this.diagramPanelElement, 'visible-mobile');
      }
   }
-
-  // Consider removing fixPanelLayout if flexbox handles sizing sufficiently
-  // private fixPanelLayout(): void { ... }
-
 }

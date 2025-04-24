@@ -1,13 +1,14 @@
-/* make app fill viewport */
-:host {
+.app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* Custom header styles */
+/* App header with title and toolbar */
 .app-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   height: 64px;
   padding: 0 16px;
@@ -15,17 +16,34 @@
   color: var(--text-primary);
   border-bottom: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
+  z-index: 10;
 }
 
 .app-title {
   font-size: 20px;
   font-weight: 500;
   font-family: 'Inter', sans-serif;
+  margin-right: 16px;
+  white-space: nowrap;
 }
 
-/* main area below header */
+/* Main content area */
 .main-shell {
-  flex: 1 1 auto;
+  flex: 1;
   display: flex;
   overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    height: auto;
+    padding: 8px;
+  }
+
+  .app-title {
+    margin-bottom: 8px;
+    margin-right: 0;
+  }
 }

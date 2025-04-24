@@ -1,18 +1,9 @@
-<header class="app-toolbar">
+<div class="app-toolbar">
   <div class="toolbar-left">
-    <span class="logo">
-      <img src="assets/favicon.svg" alt="Mermaid Logo" />
-      <span class="title">Mermaid Live Editor</span>
-    </span>
-    <span class="version">v{{mermaidVersion}}</span>
   </div>
 
-  <div class="toolbar-center"></div>
-
   <div class="toolbar-right">
-    <button class="icon-button" title="Sample Diagrams" (click)="openSampleDiagrams()">
-      <span class="icon icon-category"></span>
-    </button>
+
 
     <button class="icon-button" title="Share Diagram" (click)="shareDiagram()">
       <span class="icon icon-share"></span>
@@ -34,7 +25,7 @@
       </div>
     </div>
     <button class="icon-button" title="Toggle Theme" (click)="toggleTheme()">
-       <span class="icon" [class.icon-light-mode]="isDarkTheme" [class.icon-dark-mode]="!isDarkTheme"></span>
+       <span class="icon" [class.icon-light]="isDarkTheme" [class.icon-dark]="!isDarkTheme"></span>
     </button>
 
     <button class="send-button" (click)="saveToAccount()">
@@ -42,4 +33,4 @@
       <span class="button-text">Save</span>
     </button>
   </div>
-</header>
+</div>
